@@ -171,7 +171,6 @@ $(document).ready(function() {
 
     $consultorio.on('change', function() {
         var num_consultorio = $(this).val();
-
         $("#consultorio_turno tbody tr").remove();
         if (num_consultorio > 0) {
             $("#consultorio_turno").fadeIn(1500);
