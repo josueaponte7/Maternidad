@@ -140,9 +140,9 @@ $(document).ready(function() {
                         TAsignar.fnClearTable();
                     });
                 } else {
-                    var total     = parseInt(data.total);
+                    var total      = parseInt(data.total);
                     var asistencia = parseInt(data.asistencia);
-                    var fech_max = data.fech_max;
+                    var fech_max   = data.fech_max;
                     $nombre.val(data.nombre);
                     $apellido.val(data.apellido);
                     $telefono.val(data.telefono);
@@ -152,7 +152,7 @@ $(document).ready(function() {
     
                     var modificar = '<img class="modificar" title="Modificar" style="cursor: pointer" src="../../imagenes/datatable/modificar.png" width="18" height="18" alt="Modificar"/>';
                     var img = '';
-                    if (total == 1 && asistencia == 0) {
+                    if (total == 1 && asistencia == 0 && fech_max == 0) {
                         $('table#tabla_asignar > thead > tr').find('th').eq(4).html('Eliminar');
                         var img = '<img class="eliminar" title="Eliminar" style="cursor: pointer" src="../../imagenes/datatable/eliminar.png" width="18" height="18" alt="Eliminar"/>';
                     } else if (total === asistencia ) {
@@ -161,20 +161,10 @@ $(document).ready(function() {
                     
                     var dias_max = 0;
                      $.post(url, {cedula_p: cedula_p, accion: 'BuscarCitas'}, function(resultado) {
-
                         $.each(resultado, function(i, obj) {
-                             if(fech_max == 1 && total > 1 && i == 0){
-                                img = modificar;
-                            }else{
-                                img = '';
-                            }
-                            
                             TAsignar.fnAddData([obj.fecha, obj.nombre, obj.consultorio, obj.observacion, img]);
                         });
                     }, 'json');
-                    
-                   
-                    
                 }
             }, 'json');
         }     
@@ -342,18 +332,15 @@ $(document).ready(function() {
         });
     });
     
-    
-    
     $btnlimpiar.click(function(){
         limpiar();
+        TAsignar.fnClearTable();
     });
 
 });
 
 function limpiar() {
-    $('input:text#text_nac').val('');
-    $('input:text#cedula_p').val('');
-    $('input:text#fecha').val('');
+    $('input:text').val('');
     $('#tr_turno').fadeOut();
     $('#accion').remove();
     $('#num_consultorio').select2('val', (0));

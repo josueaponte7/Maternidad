@@ -23,16 +23,11 @@ $result_cel = $objmod->getCodCelular();
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . _css_boostrap; ?>
-    "/>
-    <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . _css_estilos; ?>
-    "/>
-    <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . _css_select2; ?>
-    "/>
-    <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css ?>
-    standalone.css"/>
-    <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css ?>
-    skin1.css"/>
+    <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . _css_boostrap; ?>"/>
+    <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . _css_estilos; ?>"/>
+    <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . _css_select2; ?>"/>
+    <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . 'standalone.css' ?>"/>
+    <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css. 'skin1.css' ?>"/>
     <script src="<?php echo _ruta_librerias_js . _js_jquery; ?>" type="text/javascript"></script>
     <script src="<?php echo _ruta_librerias_js . _js_bootstrap; ?>" type="text/javascript"></script>
     <script src="<?php echo _ruta_librerias_js ?>jquery.tools.js" type="text/javascript"></script>
