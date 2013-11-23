@@ -149,7 +149,6 @@ $(document).ready(function() {
                     $btnaccion.prop('disabled', false);
                     TAsignar.fnClearTable();
                     
-    
                     var modificar = '<img class="modificar" title="Modificar" style="cursor: pointer" src="../../imagenes/datatable/modificar.png" width="18" height="18" alt="Modificar"/>';
                     var img = '';
                     if (total == 1 && asistencia == 0 && fech_max == 0) {
