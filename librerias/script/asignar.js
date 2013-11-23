@@ -168,7 +168,7 @@ $(document).ready(function() {
             }, 'json');
         }     
     });
-
+H
     $consultorio.on('change', function() {
         var num_consultorio = $(this).val();
         $("#consultorio_turno tbody tr").remove();
