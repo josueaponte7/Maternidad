@@ -193,7 +193,7 @@ $result_cod = $objmod->getCod();
                                     </tr>
                                     <tr>
                                       <td  colspan="6" align="center">
-                                      <table width="650" border="0" cellspacing="1"  class="dataTable" id="tabla">
+                                      <table style="width:100%" border="0" cellspacing="1"  class="dataTable" id="tabla">
                                         <thead>
                                           <tr>
                                             <th>Cedula</th>

@@ -168,7 +168,6 @@ $(document).ready(function() {
     
     var p_cedula    = /^[0-9]{7,9}$/;
     var p_telefono  = /^[0-9]{7}$/;
-    ' abcdefghijklmnopqrstuvwxyzáéíóúñ#/º-1234567890';
     var p_direccion = /^[a-zA-Z0-9áéíóúñÁÉÍÓÚÑ#º\-\s\/]{10,150}$/;
     $btnaccion.on('click', function() {
 
