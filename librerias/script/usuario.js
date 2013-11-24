@@ -92,8 +92,19 @@ $(document).ready(function() {
     });
     
      $('table#tabla_usuarios').on('click', 'img.modificar', function() {
-         $estatus.val(false);
-     })
+          $swestatus.bootstrapSwitch('setState', true);
+          var padre   = $(this).closest('tr');
+          var fila    = padre.index();
+          var usuario = padre.children('td').eq(0).text();
+          
+          var estatus = padre.children('td').eq(2).text();
+          
+          $usuario.val(usuario);
+          if(estatus == 'Inactivo'){
+              $swestatus.bootstrapSwitch('setState', false);
+          }
+         
+     });
     $btnlimpiar.on('click', function() {
         $usuario.val('');
         limpiar();
