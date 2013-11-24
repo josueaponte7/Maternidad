@@ -277,7 +277,6 @@ $(document).ready(function() {
         }
     });
 
-
     $('table#tabla').on('click', 'img.modificar', function() {
 
         var padre = $(this).closest('tr');
