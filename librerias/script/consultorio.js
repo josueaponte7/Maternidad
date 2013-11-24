@@ -82,8 +82,11 @@ $(document).ready(function() {
 
         var $especilaidad = $select_espe.find('option').filter(':selected').text();
 
-        var marcado = $("input:checkbox[name='turno[]']:checked").length;
-
+        if ($("input:checkbox + a").hasClass('checked')) {
+            var marcado = 1;
+        } else {
+            marcado = 0;
+        }
         if ($consultorio.val() === null || $consultorio.val().length === 0 || /^\s+$/.test($consultorio.val())) {
             $div_consultorio.addClass('has-error');
             $consultorio.focus();
@@ -91,14 +94,7 @@ $(document).ready(function() {
             $div_consultorio.addClass('has-error');
             $consultorio.focus();
         } else if ($select_espe.val() == 0) {
-            $select_espe.select2("container").addClass("error_select");
-            $('#s2id_especialidad a.select2-choice').addClass('error_select');
-        } else if ($select_turno.val() == 0) {
-            $select_espe.select2("container").removeClass("error_select");
-            $('#s2id_especialidad a.select2-choice').removeClass('error_select');
-
-            $select_turno.select2("container").addClass("error_select");
-            $('#s2id_turno a.select2-choice').addClass('error_select');
+           $select_espe.addClass('has-error');
         } else if (marcado == 0) {
             window.parent.apprise('Debe seleccionar un turno', {'textOk': 'Aceptar'});
         } else {
@@ -117,7 +113,7 @@ $(document).ready(function() {
                         turno.push($(this).data('label'));
                     });
                     var turnos = turno.join(",");
-
+                    
                     var cod_msg = parseInt(data.error_codmensaje);
                     var mensaje = data.error_mensaje;
                     window.parent.apprise(mensaje, {'textOk': 'Aceptar'});
@@ -156,9 +152,8 @@ $(document).ready(function() {
 
     var $tabla = $('table#tabla');
     $tabla.on('click', 'img.modificar', function() {
-        $('#fila').remove();
-        $('#num_consultorio').remove();
-        $('#accion').remove();
+        
+        limpiar();
 
         var $padre = $(this).closest('tr');
         var fila = $padre.index();
@@ -170,6 +165,7 @@ $(document).ready(function() {
 
             $("input:checkbox + a").removeClass('checked');
             $("input:checkbox + a").parent('div').removeClass('disabled');
+            $("input:checkbox").prop('checked',false);
             var cod_especialidad = data.cod_especialidad;
             var turnos = data.turnos;
             var cod_turnos = turnos.split(',');
@@ -178,15 +174,19 @@ $(document).ready(function() {
                 $.post(url, {num_consultorio: num_consultorio, cod_turnos: data.turnos, accion: 'BuscarMedicoTurno'}, function(resultado) {
                     if (cod_turnos.length == 2) {
                         $("input:checkbox + a").addClass('checked');
+                        $("input:checkbox[name='turno[]']").prop('checked',true);
                         if (resultado.total == 2) {
                             $("input:checkbox + a").parent('div').addClass('disabled');
                         } else if (resultado.total == 1) {
+                            alert(resultado.cod_turno);
+                            $("input:checkbox#"+ resultado.cod_turno).prop('checked',true);
                             $("input:checkbox#" + resultado.cod_turno).next('a').parent('div').addClass('disabled'); 
                         }
                     }
                 }, 'json');
             } else {
                 $("input:checkbox#" + data.turnos).next('a').addClass('checked');
+                $("input:checkbox#"+ data.turnos).prop('checked',true);
                 $.post(url, {num_consultorio: num_consultorio, cod_turnos: data.turnos, accion: 'BuscarMedicoTurno'}, function(resultado) {
                     if (resultado.total == 1) {
                         $("input:checkbox#" + data.turnos).next('a').parent('div').addClass('disabled');
@@ -221,8 +221,7 @@ function limpiar()
     $('form#frmconsultorio input:text#consultorio').val('');
     $('form#frmconsultorio select#especialidad').select2('val', 0);
     $('form#frmconsultorio select#turno').select2('val', 0);
-    $('form#frmconsultorio select#desde').select2('val', 0).find('option:gt(0)').remove().end();
-    $("form#frmconsultorio select#hasta").select2('val', 0).find('option:gt(0)').remove().end();
+    $('select,div').removeClass('has-error');
     $('form#frmconsultorio input:button#btnaccion').val('Agregar');
     $("input:checkbox").prop('checked', false);
     $("input:checkbox + a").removeClass('checked');

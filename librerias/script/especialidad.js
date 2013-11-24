@@ -39,13 +39,12 @@ $(document).ready(function() {
     $btnaccion.on('click', function() {
 
         $('#accion').remove();
-
+        
         var $accion = ' <input type="hidden" id="accion" name="accion" value="" />';
         $($accion).prependTo($(this));
 
         var accion = $(this).val();
-
-
+      
         if (accion === 'Agregar') {
             $('#accion').val(accion);
             if ($especialidad.val() === null || $especialidad.val().length === 0 || /^\s+$/.test($especialidad.val())) {
@@ -56,7 +55,7 @@ $(document).ready(function() {
                 $especialidad.focus();
             } else {
                 var modificar = '<img class="modificar" title="Modificar" style="cursor: pointer" src="../../imagenes/datatable/modificar.png" width="18" height="18" alt="Modificar"/>';
-                var eliminar = '<img class="eliminar"  title="Eliminar"  style="cursor: pointer" src="../../imagenes/datatable/eliminar.png"  width="18" height="18" alt="Eliminar" />';
+                var eliminar  = '<img class="eliminar"  title="Eliminar"  style="cursor: pointer" src="../../imagenes/datatable/eliminar.png"  width="18" height="18" alt="Eliminar" />';
 
                 $.post(url, $frmespecialidad.serialize(), function(data) {
                     var cod_msg = parseInt(data.error_codmensaje);
@@ -66,7 +65,7 @@ $(document).ready(function() {
                     if (cod_msg === 21) {
                          var codigo = TEspecialidad.fnGetData().length;
                          codigo = codigo + 1;
-                        TEspecialidad.fnAddData([codigo, $especialidad.val(), modificar, eliminar]);
+                         TEspecialidad.fnAddData([codigo, $especialidad.val(), modificar, eliminar]);
                          limpiar();
                     }
                 },'json');
@@ -80,15 +79,11 @@ $(document).ready(function() {
 
                         var cod_msg = parseInt(data.error_codmensaje);
                         var mensaje = data.error_mensaje;
-                        var tipo = data.tipo_error;
-                        var fila = $("#fila").val();
+                        var fila    = $("#fila").val();
 
                         window.parent.apprise(mensaje, {'textOk': 'Aceptar'});
 
                         if (cod_msg === 22) {
-
-                            var fila = $('#fila').val();
-
                             $("#tabla tbody tr:eq(" + fila + ")").find("td:eq(1)").html($especialidad.val());
                             limpiar();
                         }
@@ -106,9 +101,10 @@ $(document).ready(function() {
         $('#fila').remove();
         $('#accion').remove();
 
-        var fila         = $(this).parent("td").parent().parent().children().index($(this).parent("td").parent());
-        var cod_esp      = $(this).parents('tr').children('td:eq(0)').text();
-        var especialidad = $(this).parents('tr').children('td').eq(1).html();
+        var padre        = $(this).closest('tr');
+        var fila         = padre.index();
+        var cod_esp      = padre.children('td:eq(0)').text();
+        var especialidad = padre.children('td').eq(1).html();
 
         $especialidad.val(especialidad);
 
@@ -125,8 +121,8 @@ $(document).ready(function() {
     $('table#tabla').on('click', 'img.eliminar', function() {
 
         limpiar();
-
-        var cod_especialidad = $padre.children('td:eq(0)').text();
+        var padre        = $(this).closest('tr');
+        var cod_especialidad = padre.children('td:eq(0)').text();
         var nRow = $(this).parents('tr')[0];
 
         window.parent.apprise('&iquest;Desea Eliminar los datos del registro?', {'verify': true, 'textYes': 'Aceptar', 'textNo': 'Cancelar'}, function(r) {
@@ -142,22 +138,18 @@ $(document).ready(function() {
                     }
 
                     limpiar();
-                    $('#fila').remove();
-                    $('#accion').remove();
-                    $('#btnaccion').val('Agregar');
-
                 }, 'json');
             }
         });
     });
 
     $('#btnlimpiar').on('click', function() {
-        $especialidad.val('');
         limpiar();
     });
 });
 
 function limpiar() {
+    $('div').removeClass('has-error');
     $('#especialidad').val('');
     $('#cod_especialidad').remove();
     $('#fila').remove();

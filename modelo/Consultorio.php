@@ -95,17 +95,13 @@ class Consultorio extends Conexion
         //$consultorio     = $datos['consultorio'];
         $especialidad    = $datos['especialidad'];
         $turno           = $datos['turno'];
-        $desde           = $datos['desde'];
-        $hasta           = $datos['hasta'];
         $num_consultorio = $datos['num_consultorio'];
-
+       
         try {
 
             $data = array(
                 'cod_especialidad' => $especialidad,
-                'cod_turno'        => $turno,
-                'cod_hora_desde'   => $desde,
-                'cod_hora_hasta'   => $hasta
+                'cod_turno'        => $turno
             );
 
             $where = "num_consultorio='$num_consultorio'";
@@ -114,9 +110,15 @@ class Consultorio extends Conexion
 
             if ($update === TRUE) {
 
-                $this->_cod_msg   = 22;
-                $this->_tipoerror = 'info';
-                $this->_mensaje   = "El Registro ha sido  Modificado con exito";
+                //$delete = $this->delete('consultorio_horario', $where);
+                if($delete === TRUE){
+   
+                    $this->_cod_msg   = 22;
+                    $this->_tipoerror = 'info';
+                    $this->_mensaje   = "El Registro ha sido  Modificado con exito";
+                }
+                
+                
             }
             throw new Exception($this->_mensaje, $this->_cod_msg);
         } catch (Exception $e) {

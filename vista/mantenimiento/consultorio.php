@@ -26,6 +26,7 @@ $result = $objmod->getConsultorioAll();
         <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . _css_boostrap; ?>"/>
         <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . _css_estilos; ?>"/>
         <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . _css_select2; ?>"/>
+        <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . _css_select2_bootstrap; ?>"/>
         <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . _css_pretty_checkable; ?>"/>
 
         <script src="<?php echo _ruta_librerias_js . _js_jquery; ?>" type="text/javascript"></script>
@@ -34,6 +35,7 @@ $result = $objmod->getConsultorioAll();
         <script src="<?php echo _ruta_librerias_js . _js_select2; ?>" type="text/javascript"></script>
         <script src="<?php echo _ruta_librerias_js . _js_select2_es; ?>" type="text/javascript"></script>
         <script src="<?php echo _ruta_librerias_js . _js_validarcampos; ?>" type="text/javascript"></script>
+        <script src="<?php echo _ruta_librerias_js . _js_librerias; ?>" type="text/javascript"></script>
         <script src="<?php echo _ruta_librerias_js . _js_pretty_checkable; ?>" type="text/javascript"></script>
         <script src="<?php echo _ruta_librerias_script_js . 'consultorio.js' ?>" type="text/javascript"></script>
     </head>
@@ -58,15 +60,17 @@ $result = $objmod->getConsultorioAll();
                                         </td>
                                         <td width="79">Especialidad:</td>
                                         <td width="253">
-                                            <select  style="width: 253px;" id="especialidad" name="especialidad">
-                                                <option value="0">Seleccione</option>
-                                                <?php
-                                                for ($i = 0; $i < count($result_especiaidad); $i++) {
+                                            <div id="div_especialidad" style="margin-top: 10px;" class="form-group">
+                                                <select id="especialidad" name="especialidad" class="form-control select2">
+                                                    <option value="0">Seleccione</option>
+                                                    <?php
+                                                    for ($i = 0; $i < count($result_especiaidad); $i++) {
+                                                        ?>
+                                                        <option value="<?php echo $result_especiaidad[$i]['cod_especialidad'] ?>"><?php echo $result_especiaidad[$i]['especialidad'] ?></option>
+                                                    <?php }
                                                     ?>
-                                                    <option value="<?php echo $result_especiaidad[$i]['cod_especialidad'] ?>"><?php echo $result_especiaidad[$i]['especialidad'] ?></option>
-                                                <?php }
-                                                ?>
-                                            </select>
+                                                </select>
+                                            </div>
                                         </td>
                                         <td width="8">
                                             <img style="cursor: pointer" id="imgespecialidad" src="../../imagenes/img_info.png" width="15" height="15" alt="img_info"/>

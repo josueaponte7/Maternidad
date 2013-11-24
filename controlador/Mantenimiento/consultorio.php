@@ -22,9 +22,6 @@ if (!isset($_POST['accion'])) {
     if(isset($_POST['turno'])){
         $datos['turno'] = $_POST['turno'];
     }
-    if(isset($_POST['desde'])){
-        $datos['desde'] = $_POST['desde'];
-    }
     if(isset($_POST['num_consultorio'])){
         $datos['num_consultorio'] = $_POST['num_consultorio'];
     }

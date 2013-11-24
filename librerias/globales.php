@@ -47,6 +47,7 @@ define("_css_demo_page", "demo_page.css");
 define("_css_dataTables", "dataTables.css");
 define("_css_alerts", "alerts.css");
 define("_css_select2", "select2.css");
+define("_css_select2_bootstrap", "select2-bootstrap.css");
 define("_css_pretty_checkable", "prettyCheckable.css");
 
 //imagenes

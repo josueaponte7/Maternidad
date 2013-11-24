@@ -4,6 +4,11 @@ $(document).ready(function() {
             $(this).parent('div').removeClass('has-error');
         }
     });
+    $('select').on({
+        change: function() {
+            $(this).removeClass('has-error');
+        }
+    });
 });
 
 function requerido(campo) {
