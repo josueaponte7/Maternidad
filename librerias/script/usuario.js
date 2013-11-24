@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    var TUsuario = $('#tabla').dataTable({
+    var TUsuario = $('#tabla_usuarios').dataTable({
         "iDisplayLength": 5,
         "iDisplayStart": 0,
         "sPaginationType": "full_numbers",
@@ -58,7 +58,7 @@ $(document).ready(function() {
             var fecha    = f.getDate() + "/" + (f.getMonth() +1) + "/" + f.getFullYear();
             var perfil   = $perfil.find(' option').filter(":selected").text();
             var swstatus = $swestatus.bootstrapSwitch('status');
-
+            var estatus  = '';
             if(swstatus == true){
                 estatus = 'Activo';
             }else{
@@ -90,7 +90,10 @@ $(document).ready(function() {
         }
 
     });
-
+    
+     $('table#tabla_usuarios').on('click', 'img.modificar', function() {
+         $estatus.val(false);
+     })
     $btnlimpiar.on('click', function() {
         $usuario.val('');
         limpiar();

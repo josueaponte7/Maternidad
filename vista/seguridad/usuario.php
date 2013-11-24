@@ -23,6 +23,7 @@ $result        = $obj->getusuariosAll();
         <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . _css_boostrap; ?>"/>
         <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . _css_estilos; ?>"/>
         <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . _css_select2; ?>"/>
+        <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . _css_select2_bootstrap; ?>"/>
         <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . _css_boostrap_switch; ?>"/>
 
         <script src="<?php echo _ruta_librerias_js . _js_jquery; ?>" type="text/javascript"></script>
@@ -73,15 +74,17 @@ $result        = $obj->getusuariosAll();
 
                                         <td width="38" height="40" align="left">Perfil:</td>
                                         <td width="221">
-                                            <select style="width: 220px;height: 25px;" id="perfil" name="perfil">
-                                                <option value="0">Seleccione</option>
-                                                <?php
-                                                for ($i = 0; $i < count($result_perfil); $i++) {
+                                            <div id="div_perfil" style="margin-top: 10px;" class="form-group">
+                                                <select id="perfil" name="perfil" class="form-control select2">
+                                                    <option value="0">Seleccione</option>
+                                                    <?php
+                                                    for ($i = 0; $i < count($result_perfil); $i++) {
+                                                        ?>
+                                                        <option value="<?php echo $result_perfil[$i]['codigo_perfil'] ?>"><?php echo $result_perfil[$i]['perfil'] ?></option>
+                                                    <?php }
                                                     ?>
-                                                    <option value="<?php echo $result_perfil[$i]['codigo_perfil'] ?>"><?php echo $result_perfil[$i]['perfil'] ?></option>
-                                                <?php }
-                                                ?>
-                                            </select>
+                                                </select>
+                                            </div>
                                         </td>
                                         <td width="15"><span class="obligatorio">*</span></td>
                                     </tr>
@@ -113,7 +116,7 @@ $result        = $obj->getusuariosAll();
                     </tr>
                     <tr>
                         <td colspan="2" align="center">
-                            <table id="tabla" border="0" cellspacing="1"  class="dataTable" >
+                            <table id="tabla_usuarios" border="0" cellspacing="1"  class="dataTable" >
                                 <thead>
                                     <tr>
                                         <th>Usuario</th>
