@@ -106,9 +106,11 @@ $objmod = new Historia();
                                     </tr>
                                     <tr>
                                       <td height="34" align="left">Tama&ntilde;o:</td>
-                                      <td><div style="margin-top: 10px" class="form-group">
-                                        <input style="width:260px;" type="text" class="form-control input-sm" id="tamano" name="tamano" value="" maxlength="10"/>
-                                      </div></td>
+                                      <td>
+                                          <div style="margin-top: 10px" class="form-group">
+                                              <input style="width:260px;" type="text" class="form-control input-sm" id="tamano" name="tamano" value="" maxlength="10"/>
+                                          </div>
+                                      </td>
                                       <td>&nbsp;</td>
                                       <td height="34" align="left">Peso:</td>
                                       <td><div style="margin-top: 10px;" class="form-group">
@@ -118,15 +120,19 @@ $objmod = new Historia();
                                     </tr>
                                     <tr>
                                       <td height="34" align="left">Tensi&oacute;n:</td>
-                                      <td><div style="margin-top: 10px" class="form-group">
-                                        <input style="width:260px;" type="text" class="form-control input-sm" id="tension" name="tension" value="" maxlength="30"/>
-                                      </div></td>
+                                      <td>
+                                          <div style="margin-top: 10px" class="form-group">
+                                              <input style="width:260px;" type="text" class="form-control input-sm" id="tension" name="tension" value="" maxlength="30"/>
+                                          </div>
+                                      </td>
                                       <td>&nbsp;</td>
                                       <td height="34" align="left">FPP:</td>
-                                      <td><div style="margin-top: 10px;" class="form-group">
-                                        <input style="width:260px;" type="text" class="form-control input-sm" id="fpp" name="fpp" value="" maxlength="10"/>
-                                      </div>
-                                        <img style="cursor: pointer;float:right;margin-top:-40px;;margin-right:-18px;;" id="imgsector2" src="../../imagenes/img_info.png" width="15" height="15" alt="img_info"/></td>
+                                      <td>
+                                          <div style="margin-top: 10px;" class="form-group">
+                                              <input style="width:260px;" type="text" class="form-control input-sm" id="fpp" name="fpp" value="" maxlength="10"/>
+                                          </div>
+                                          <img style="cursor: pointer;float:right;margin-top:-40px;;margin-right:-18px;;" id="imgsector2" src="../../imagenes/img_info.png" width="15" height="15" alt="img_info"/>
+                                      </td>
                                     </tr>
                                     <tr>
                                         <td width="96" height="34" align="left">FUR:</td>
