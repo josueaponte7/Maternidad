@@ -54,18 +54,71 @@ $(document).ready(function() {
     $telefono.validar(val_cedula);
     $direccion.validar(val_direccion);
 
+    $('#imgcedula').tooltip({
+        html: true,
+        placement: 'right',
+        title: '<span class="requerido">Requerido</span><br/>La C&eacute;dula no puede estar en <span class="alerta">blanco</span>,<br/> no debe tener menos de <span class="alerta">7 digitos</span>, ni comenzar con 0,<br/> debe seleccionar la nacionalidad en<span class="alerta"> (N)</span>'
+    });
+    
+    $('#imgnombre').tooltip({
+        html: true,
+        placement: 'left',
+        title: '<span class="requerido">Requerido</span><br/>El Nombre no debe estar en <span class="alerta">blanco</span>,<br/> solo acepta<span class="alerta"> letras</span>'
+    });
+    
+    $('#imgapellido').tooltip({
+        html: true,
+        placement: 'right',
+        title: '<span class="requerido">Requerido</span><br/>El Apellido no debe estar en <span class="alerta">blanco</span>,<br/> solo acepta<span class="alerta"> letras</span>'
+    });
+    
+    $('#imgtelefono').tooltip({
+        html: true,
+        placement: 'left',
+        title: '<span class="requerido">Requerido</span><br/>El Tel&eacute;fono no puede estar en <span class="alerta">blanco</span>,<br/>no debe tener menos de <span class="alerta">9 digitos</span> ,<br/>debe seleccionar el C&oacute;digo <span class="alerta">(Cod)</span>'
+    });
+    
+    $('#imgdireccion').tooltip({
+        html: true,
+        placement: 'left',
+        title: '<span class="requerido">Requerido</span><br/>La Direcci&oacute;n no debe estar en <span class="alerta">blanco</span><br/> caracteres permitidos<span class="alerta"> #/º-</span><br/>no debe tener menos de <span class="alerta">10 caracteres</span> '
+    });
+    
+    $('#imgespecialidad').tooltip({
+        html: true,
+        placement: 'right',
+        title: '<span class="requerido">Requerido</span><br/>Este campo es requerido '
+    });
+    
+    $('#imgconsutorio').tooltip({
+        html: true,
+        placement: 'left',
+        title: '<span class="requerido">Requerido</span><br/>Este campo es requerido '
+    });
+    $('#imgturno').tooltip({
+        html: true,
+        placement: 'right',
+        title: '<span class="requerido">Requerido</span><br/>Este campo es requerido '
+    });
+    
     var url = '../../controlador/medicos/personalmedico.php';
 
     $("ul#nacionalidad > li > span").click(function() {
         var nac = $(this).attr('id');
+        $cedula_pm.val('');
         if (nac != 'N') {
-            $hnac.val(nac)
+            $btn_nac.removeClass('btn-danger');
+            if (nac == 'V') {
+                var tamano = 8;
+            } else {
+                tamano = 9;
+            }
+            $hnac.val(nac);
             $text_nac.val(nac + '-');
-            $cedula_pm.focus();
+            $cedula_pm.attr('maxlength',tamano).focus();
         } else {
             $hnac.val('');
             $text_nac.val('');
-            $cedula_pm.val('');
         }
     });
 
@@ -74,8 +127,9 @@ $(document).ready(function() {
         var cod_local = $(this).text();
         var id = $(this).attr('id');
         if (cod_local != 'Cod') {
+            $btn_codlocal.removeClass('btn-danger');
             $hcod_telefono.val(id);
-            $cod_telefono.val(cod_local);
+            $cod_telefono.val(cod_local+'-');
             $telefono.focus();
         } else {
             $hcod_telefono.val('');
@@ -111,7 +165,11 @@ $(document).ready(function() {
             }, 'json');
         }
     });
-
+    
+    var p_cedula    = /^[0-9]{7,9}$/;
+    var p_telefono  = /^[0-9]{7}$/;
+    ' abcdefghijklmnopqrstuvwxyzáéíóúñ#/º-1234567890';
+    var p_direccion = /^[a-zA-Z0-9áéíóúñÁÉÍÓÚÑ#º\-\s\/]{10,150}$/;
     $btnaccion.on('click', function() {
 
         $('#accion').remove();
@@ -130,6 +188,9 @@ $(document).ready(function() {
         } else if ($cedula_pm.val() === null || $cedula_pm.val().length === 0 || /^\s+$/.test($cedula_pm.val())) {
             $div_cedula.addClass('has-error');
             $cedula_pm.focus();
+        }else if(!p_cedula.test($cedula_pm.val())){
+            $div_cedula.addClass('has-error');
+            $cedula_pm.focus();
         } else if ($nombre.val() === null || $nombre.val().length === 0 || /^\s+$/.test($nombre.val())) {
             $div_nombre.addClass('has-error');
             $nombre.focus();
@@ -141,18 +202,21 @@ $(document).ready(function() {
         } else if ($telefono.val() === null || $telefono.val().length === 0 || /^\s+$/.test($telefono.val())) {
             $div_telefono.addClass('has-error');
             $telefono.focus();
+        }else if(!p_telefono.test($telefono.val())){
+            $div_telefono.addClass('has-error');
+            $telefono.focus();
         } else if ($direccion.val() === null || $direccion.val().length === 0 || /^\s+$/.test($direccion.val())) {
             $div_direccion.addClass('has-error');
             $direccion.focus();
+        }else if(!p_direccion.test($direccion.val())){
+            $div_direccion.addClass('has-error');
+            $direccion.focus();
         } else if ($especialidad.val() == 0) {
-            $especialidad.select2("container").addClass("error_select");
-            $('#s2id_cod_esp a.select2-choice').addClass('error_select');
+            $especialidad.addClass("has-error");
         } else if ($consultorio.val() == 0) {
-            $consultorio.select2("container").addClass("error_select");
-            $('#s2id_num_cons a.select2-choice').addClass('error_select');
+            $consultorioaddClass("has-error");
         } else if ($turno.val() == 0) {
-            $turno.select2("container").addClass("error_select");
-            $('#s2id_turno a.select2-choice').addClass('error_select');
+            $turno.addClass("has-error");
         } else {
             if (accion === 'Agregar') {
                 $('#accion').val('Agregar');
@@ -283,21 +347,14 @@ $(document).ready(function() {
 
 function limpiar() {
 
-    $('#btn_nac').prop('disabled',false);
-    $('#cedula_pm').val('').prop('disabled',false);
-    $('#nombre').val('').prop('disabled',false);
-    $('#apellido').val('').prop('disabled',false);
-    $('#telefono').val('');
-    $('#direccion').val('');
+    $('div,select').removeClass('has-error');
+    $('input:text,textarea').val('');
+    $('#btn_nac,#btn_codlocal').prop('disabled',false).removeClass('btn-danger');
+    $('#cedula_pm,#nombre,#apellido,#txt_nac').prop('disabled',false);
     $('#accion').remove();
-    $('form#frmpersonalmedico input:text#text_nac').val('');
-    $('form#frmpersonalmedico input:text#cod_telefono').val('');
-    $('form#frmpersonalmedico select#cod_esp').select2('val', 0);
-    $('form#frmpersonalmedico select#num_cons').select2('val', 0);
-    $('form#frmpersonalmedico select#turno').select2('val', 0);
-    $('form#frmpersonalmedico select#num_cons').find('option:gt(0)').remove().end();
-    $('form#frmpersonalmedico select#turno').find('option:gt(0)').remove().end();
-    $('span.error_val').fadeOut();
+    $('select').select2('val', 0);
+    $('select#num_cons').find('option:gt(0)').remove().end();
+    $('select#turno').find('option:gt(0)').remove().end();
     $('#btnaccion').val('Agregar');
 }
 

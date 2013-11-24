@@ -25,6 +25,7 @@ $result_cod = $objmod->getCod();
         <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . _css_boostrap; ?>"/>
         <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . _css_estilos; ?>"/>
         <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . _css_select2; ?>"/>
+        <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . _css_select2_bootstrap; ?>"/>
 
         <script src="<?php echo _ruta_librerias_js . _js_jquery; ?>" type="text/javascript"></script>
         <script src="<?php echo _ruta_librerias_js . _js_bootstrap; ?>" type="text/javascript"></script>
@@ -33,6 +34,7 @@ $result_cod = $objmod->getCod();
         <script src="<?php echo _ruta_librerias_js . _js_select2_es; ?>" type="text/javascript"></script>
         <script src="<?php echo _ruta_librerias_js . _js_bootstrap_tooltip; ?>" type="text/javascript"></script>
         <script src="<?php echo _ruta_librerias_js . _js_validarcampos; ?>" type="text/javascript"></script>
+        <script src="<?php echo _ruta_librerias_js . _js_librerias; ?>" type="text/javascript"></script>
         <script src="<?php echo _ruta_librerias_script_js .'personalmedico.js'?>" type="text/javascript"></script>
         <style type="text/css">
             ul#cod_local,ul#cod_cel{
@@ -56,7 +58,7 @@ $result_cod = $objmod->getCod();
                             <form name="frmpersonalmedico" id="frmpersonalmedico" method="post" enctype="multipart/form-data">
                                 <table width="712" align="center">
                                     <tr>
-                                        <td width="80" height="40" align="left">Cedula:</td>
+                                        <td width="80" height="40" align="left">C&eacute;dula:</td>
                                         <td width="222">
                                            <div id="div_cedula" class="input-group">
                                                 <div class="input-group-btn">
@@ -75,7 +77,7 @@ $result_cod = $objmod->getCod();
                                             </div>
                                         </td>
                                         <td width="94">
-                                            <img style="cursor: pointer" id="imgsector1" src="../../imagenes/img_info.png" width="15" height="15" alt="img_info"/>
+                                            <img style="cursor: pointer" id="imgcedula" src="../../imagenes/img_info.png" width="15" height="15" alt="img_info"/>
                                         </td>
                                         <td width="73" height="40" align="left">Nombre:</td>
                                         <td width="204">
@@ -84,7 +86,7 @@ $result_cod = $objmod->getCod();
                                             </div>
                                         </td>
                                         <td width="11">
-                                            <img style="cursor: pointer" id="imgsector2" src="../../imagenes/img_info.png" width="15" height="15" alt="img_info"/>
+                                            <img style="cursor: pointer" id="imgnombre" src="../../imagenes/img_info.png" width="15" height="15" alt="img_info"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -95,9 +97,9 @@ $result_cod = $objmod->getCod();
                                             </div>
                                         </td>
                                         <td width="94">
-                                            <img style="cursor: pointer" id="imgsector3" src="../../imagenes/img_info.png" width="15" height="15" alt="img_info"/>
+                                            <img style="cursor: pointer" id="imgapellido" src="../../imagenes/img_info.png" width="15" height="15" alt="img_info"/>
                                         </td>
-                                        <td width="73" height="40" align="left">Telefono:</td>
+                                        <td width="73" height="40" align="left">Tel&eacute;fono:</td>
                                         <td width="204">
                                          <div id="div_telefono" class="input-group">
                                                 <div class="input-group-btn">
@@ -117,54 +119,60 @@ $result_cod = $objmod->getCod();
                                                 </div>
                                                 <input type="hidden" id="hcod_telefono" name="hcod_telefono" />
                                                 <input readonly id="cod_telefono" style="position: relative;top:8px;width: 40px;height:29px;background-color: transparent;border: none;padding-left: 2px;" maxlength="2"/>
-                                                <input style="margin-top:-30px;padding-left: 25px;" type="text" class="form-control input-sm" id="telefono" name="telefono" value="" maxlength="7" />
+                                                <input style="margin-top:-30px;padding-left: 30px;" type="text" class="form-control input-sm" id="telefono" name="telefono" value="" maxlength="7" />
                                             </div>
                                         </td>
                                         <td width="11">
-                                            <img style="cursor: pointer" id="imgsector4" src="../../imagenes/img_info.png" width="15" height="15" alt="img_info"/>
+                                            <img style="cursor: pointer" id="imgtelefono" src="../../imagenes/img_info.png" width="15" height="15" alt="img_info"/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td width="80" height="40" align="left">Direcci&oacute;n:</td>
                                         <td colspan="4">
                                              <div id="div_direccion" class="form-group">
-                                                <textarea class="form-control" id="direccion" name="direccion" rows="2" cols="62"></textarea>
+                                                 <textarea class="form-control" id="direccion" name="direccion" rows="2" cols="62" maxlength="150"></textarea>
                                             </div>
                                         </td>
                                         <td width="11">
-                                            <img style="cursor: pointer" id="imgsector5" src="../../imagenes/img_info.png" width="15" height="15" alt="img_info"/>
+                                            <img style="cursor: pointer" id="imgdireccion" src="../../imagenes/img_info.png" width="15" height="15" alt="img_info"/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td width="80" height="40" align="left">Especialidad:</td>
                                         <td>
-                                            <select style="width: 223px;" name="cod_esp"  id="cod_esp">
-                                                <option value="0">Seleccione</option>
-                                                <?php
-                                                for ($i = 0; $i < count($result_esp); $i++) {
+                                            <div id="div_cod_esp" style="margin-top: 10px;" class="form-group">
+                                                <select name="cod_esp"  id="cod_esp" class="form-control select2">
+                                                    <option value="0">Seleccione</option>
+                                                    <?php
+                                                    for ($i = 0; $i < count($result_esp); $i++) {
+                                                        ?>
+                                                        <option value="<?php echo $result_esp[$i]['cod_especialidad'] ?>"><?php echo $result_esp[$i]['especialidad'] ?></option>
+                                                    <?php }
                                                     ?>
-                                                    <option value="<?php echo $result_esp[$i]['cod_especialidad'] ?>"><?php echo $result_esp[$i]['especialidad'] ?></option>
-                                                <?php }
-                                                ?>
-                                            </select>
+                                                </select>
+                                            </div>
                                         </td>
-                                        <td width="94"><img style="cursor: pointer" id="imgsector7" src="../../imagenes/img_info.png" width="15" height="15" alt="img_info"/></td>
+                                        <td width="94"><img style="cursor: pointer" id="imgespecialidad" src="../../imagenes/img_info.png" width="15" height="15" alt="img_info"/></td>
                                         <td width="73" height="40" align="left">Consultorio:</td>
                                         <td>
-                                            <select style="width: 223px;" name="num_cons" id="num_cons">
-                                                <option value="0">Seleccione</option>
-                                            </select>
+                                            <div id="div_num_cons" style="margin-top: 10px;" class="form-group">
+                                                <select name="num_cons" id="num_cons" class="form-control select2">
+                                                    <option value="0">Seleccione</option>
+                                                </select>
+                                            </div>
                                         </td>
-                                        <td width="11"><img style="cursor: pointer" id="imgsector6" src="../../imagenes/img_info.png" width="15" height="15" alt="img_info"/></td>
+                                        <td width="11"><img style="cursor: pointer" id="imgconsutorio" src="../../imagenes/img_info.png" width="15" height="15" alt="img_info"/></td>
                                     </tr>
                                     <tr>
                                         <td width="80" height="40" align="left">Turno:</td>
                                         <td>
-                                            <select style="width: 223px;" name="turno"  id="turno">
-                                                <option value="0">Seleccione</option>
-                                            </select>
+                                            <div id="div_turno" style="margin-top: 10px;" class="form-group">
+                                                <select  name="turno"  id="turno" class="form-control select2">
+                                                    <option value="0">Seleccione</option>
+                                                </select>
+                                            </div>
                                         </td>
-                                        <td width="94"><img style="cursor: pointer" id="imgsector8" src="../../imagenes/img_info.png" width="15" height="15" alt="img_info"/></td>
+                                        <td width="94"><img style="cursor: pointer" id="imgturno" src="../../imagenes/img_info.png" width="15" height="15" alt="img_info"/></td>
                                         <td>&nbsp;</td>
                                         <td>&nbsp;</td>
     									<td>&nbsp;</td>

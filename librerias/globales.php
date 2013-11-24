@@ -55,4 +55,3 @@ define("_img_datatable_agregar", "agregar.png");
 define("_img_datatable_modificar", "modificar.png");
 define("_img_datatable_modificar_disabled", "modificar_disabled.png");
 define("_img_datatable_eliminar", "eliminar.png");
-?>
