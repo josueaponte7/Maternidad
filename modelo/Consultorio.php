@@ -48,8 +48,10 @@ class Consultorio extends Conexion
                     $num_consultorio = $this->get('consultorio', 'num_consultorio', "consultorio ='" . $cosultorio . "'");
                     $bandera         = count($turno);
                     foreach ($turno as $valor) {
-
+                        
+                        $cod_consu_horario = $this->autoIncremet('consultorio_horario', 'cod_consu_horario');
                         $turno_manana = array(
+                            "cod_consu_horario" => "$cod_consu_horario",
                             "num_consultorio"  => $num_consultorio,
                             "cod_turno"        => $valor,
                             "cod_especialidad" => $especialidad
@@ -92,33 +94,68 @@ class Consultorio extends Conexion
 
     public function editConsultorio($datos)
     {
-        //$consultorio     = $datos['consultorio'];
+        $consultorio     = $datos['consultorio'];
         $especialidad    = $datos['especialidad'];
-        $turno           = $datos['turno'];
+        $bandera         = 0;
+        
+        if(isset($datos['turno'])){
+            $turno      = $datos['turno'];
+            $cod_turnos = implode(',', $turno);
+            $bandera  = count($turno);
+        }else{
+            $cod_turnos = 0;
+        }
         $num_consultorio = $datos['num_consultorio'];
-       
+        
         try {
 
             $data = array(
-                'cod_especialidad' => $especialidad,
-                'cod_turno'        => $turno
+                'consultorio'        => $consultorio
             );
 
             $where = "num_consultorio='$num_consultorio'";
 
-            $update = $this->update('consultorio_horario', $data, $where);
+            $update = $this->update('consultorio', $data, $where);
 
             if ($update === TRUE) {
-
-                //$delete = $this->delete('consultorio_horario', $where);
+    
+                $where1 = "(cod_consu_horario) NOT IN(SELECT cod_consu_horario FROM consultorio_medico WHERE num_consultorio=$num_consultorio)";
+                $delete = $this->delete('consultorio_horario', $where1);
                 if($delete === TRUE){
    
-                    $this->_cod_msg   = 22;
-                    $this->_tipoerror = 'info';
-                    $this->_mensaje   = "El Registro ha sido  Modificado con exito";
+                     if ($bandera != 0) {
+                        foreach ($turno as $valor) {
+
+                            $where             = "num_consultorio='$num_consultorio'";
+                            $cod_consu_horario = $this->autoIncremet('consultorio_horario', 'cod_consu_horario');
+                            $turno_manana      = array(
+                                "cod_consu_horario" => "$cod_consu_horario",
+                                "num_consultorio"   => $num_consultorio,
+                                "cod_turno"         => $valor,
+                                "cod_especialidad"  => $especialidad
+                            );
+                            $insert            = $this->insert('consultorio_horario', $turno_manana);
+                            if ($insert === TRUE) {
+                                $bandera--;
+                            }
+                        }
+
+                        if ($bandera === 0) {
+                            $this->_cod_msg   = 22;
+                            $this->_tipoerror = 'info';
+                            $this->_mensaje   = "El Registro ha sido  Modificado con exito";
+                        } else {
+                            $this->delete('consultorio_horario', "num_consultorio=$num_consultorio");
+                            $this->_cod_msg   = 16;
+                            $this->_tipoerror = 'error';
+                            $this->_mensaje   = "Ocurrio un error comuniquese con informatica";
+                        }
+                    } else {
+                        $this->_cod_msg   = 22;
+                        $this->_tipoerror = 'info';
+                        $this->_mensaje   = "El Registro ha sido  Modificado con exito";
+                    }
                 }
-                
-                
             }
             throw new Exception($this->_mensaje, $this->_cod_msg);
         } catch (Exception $e) {

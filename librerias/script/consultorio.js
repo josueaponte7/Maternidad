@@ -80,8 +80,6 @@ $(document).ready(function() {
 
         var accion = $(this).val();
 
-        var $especilaidad = $select_espe.find('option').filter(':selected').text();
-
         if ($("input:checkbox + a").hasClass('checked')) {
             var marcado = 1;
         } else {
@@ -99,6 +97,14 @@ $(document).ready(function() {
             window.parent.apprise('Debe seleccionar un turno', {'textOk': 'Aceptar'});
         } else {
 
+            var especilaidad = $select_espe.find('option').filter(':selected').text();
+            var turno = new Array();
+            $("input:checkbox[name='turno[]']:checked").each(function() {
+                turno.push($(this).data('label'));
+            });
+  
+            var turnos = turno.join(",");
+            
             $('#accion').val(accion);
 
             if (accion === 'Agregar') {
@@ -108,23 +114,30 @@ $(document).ready(function() {
                 var modificar = '<img id="' + codigo + '" class="modificar" title="Modificar" style="cursor: pointer" src="../../imagenes/datatable/modificar.png" width="18" height="18" alt="Modificar"/>';
 
                 $.post(url, $frmconsultorio.serialize(), function(data) {
-                    var turno = new Array();
-                    $("input:checkbox[name='turno[]']:checked").each(function() {
-                        turno.push($(this).data('label'));
-                    });
-                    var turnos = turno.join(",");
-                    
+  
                     var cod_msg = parseInt(data.error_codmensaje);
                     var mensaje = data.error_mensaje;
                     window.parent.apprise(mensaje, {'textOk': 'Aceptar'});
 
                     if (cod_msg === 21) {
-                        TConsultorio.fnAddData([$consultorio.val(), $especilaidad, turnos, modificar]);
+                        TConsultorio.fnAddData([$consultorio.val(), especilaidad, turnos, modificar]);
                         limpiar();
                     }
 
                 }, 'json');
             } else {
+                var turno_s = new Array();
+            
+                $("input:checkbox").each(function() {
+                    if($(this).is(':disabled')){
+                        turno_s.push($(this).data('label'));
+                    }
+                    if($(this).is(':checked')){
+                        turno_s.push($(this).data('label'));
+                    }
+                });
+                var turnos_s = turno_s.join(",");
+  
                 window.parent.apprise('&iquest;Desea Modificar los datos del registro?', {'verify': true, 'textYes': 'Aceptar', 'textNo': 'Cancelar'}, function(r) {
                     if (r) {
                         $.post(url, $frmconsultorio.serialize(), function(data) {
@@ -135,10 +148,9 @@ $(document).ready(function() {
                             var fila = $("#fila").val();
 
                             if (cod_msg === 22) {
-
-                                TConsultorio.fnUpdate(especilaidad.text(), parseInt(fila), 1);
-                                TConsultorio.fnUpdate(turno.text(), parseInt(fila), 2);
-                                TConsultorio.fnUpdate(horario, parseInt(fila), 3);
+                                $("#tabla tbody tr:eq(" + fila + ")").find("td:eq(0)").html($consultorio.val());
+                                $("#tabla tbody tr:eq(" + fila + ")").find("td:eq(1)").html(especilaidad);
+                                $("#tabla tbody tr:eq(" + fila + ")").find("td:eq(2)").html(turnos_s);
 
                                 limpiar();
                             }
@@ -174,29 +186,31 @@ $(document).ready(function() {
                 $.post(url, {num_consultorio: num_consultorio, cod_turnos: data.turnos, accion: 'BuscarMedicoTurno'}, function(resultado) {
                     if (cod_turnos.length == 2) {
                         $("input:checkbox + a").addClass('checked');
-                        $("input:checkbox[name='turno[]']").prop('checked',true);
+                        
                         if (resultado.total == 2) {
+                            $("input:checkbox[name='turno[]']").prop('checked',true);
                             $("input:checkbox + a").parent('div').addClass('disabled');
                         } else if (resultado.total == 1) {
-                            alert(resultado.cod_turno);
-                            $("input:checkbox#"+ resultado.cod_turno).prop('checked',true);
+                            $("input:checkbox").not('#'+resultado.cod_turno).prop('checked',true);
+                            $("input:checkbox#"+resultado.cod_turno).prop('disabled',true);
                             $("input:checkbox#" + resultado.cod_turno).next('a').parent('div').addClass('disabled'); 
                         }
                     }
                 }, 'json');
             } else {
                 $("input:checkbox#" + data.turnos).next('a').addClass('checked');
-                $("input:checkbox#"+ data.turnos).prop('checked',true);
                 $.post(url, {num_consultorio: num_consultorio, cod_turnos: data.turnos, accion: 'BuscarMedicoTurno'}, function(resultado) {
                     if (resultado.total == 1) {
                         $("input:checkbox#" + data.turnos).next('a').parent('div').addClass('disabled');
+                    }else{
+                        $("input:checkbox#"+ data.turnos).prop('checked',true);
                     }
                 }, 'json');
             }
             $select_espe.select2('val', cod_especialidad);
 
-
         }, 'json');
+        
         var $num_cons = '<input type="hidden" id="num_consultorio"  value="' + num_consultorio + '" name="num_consultorio">';
         $($num_cons).prependTo($btnaccion);
 
@@ -225,4 +239,5 @@ function limpiar()
     $('form#frmconsultorio input:button#btnaccion').val('Agregar');
     $("input:checkbox").prop('checked', false);
     $("input:checkbox + a").removeClass('checked');
+    $("input:checkbox + a").parent('div').removeClass('disabled');
 }
