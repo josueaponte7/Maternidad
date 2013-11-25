@@ -18,6 +18,8 @@ if (!isset($_POST['accion'])) {
     }
     if (isset($_POST['cedula_pm'])) {
         $datos['cedula_pm'] = addslashes($_POST["cedula_pm"]);
+    }else if(isset($_POST['hcedula_pm'])){
+        $datos['cedula_pm'] = addslashes($_POST["hcedula_pm"]);
     }
     if (isset($_POST['nombre'])) {
         $datos['nombre'] = addslashes($_POST["nombre"]);
@@ -51,21 +53,29 @@ if (!isset($_POST['accion'])) {
         break;
         case 'BuscarCons':
             $resultado = $obj->getConsultorio($datos);
-            $data = array();
-            for ($j = 0; $j < count($resultado); $j++) {
-                $data[] = array('num_consultorio' => $resultado[$j]['num_consultorio'], 'consultorio' => $resultado[$j]['consultorio']);
+            if (count($resultado) == 0) {
+                echo  0;
+            } else {
+                $data = array();
+                for ($j = 0; $j < count($resultado); $j++) {
+                    $data[] = array('num_consultorio' => $resultado[$j]['num_consultorio'], 'consultorio' => $resultado[$j]['consultorio']);
+                }
+                echo json_encode($data);
             }
-            echo json_encode($data);
-        break;
+            break;
 
         case 'BuscarTur':
             $resultado = $obj->getTurno($datos);
-            $data = array();
-            for ($j = 0; $j < count($resultado); $j++) {
-                $data[] = array('cod_turno' => $resultado[$j]['cod_turno'], 'turno' => $resultado[$j]['turno']);
+            if (count($resultado) == 0) {
+                echo 0;
+            } else {
+                $data = array();
+                for ($j = 0; $j < count($resultado); $j++) {
+                    $data[] = array('cod_turno' => $resultado[$j]['cod_turno'], 'turno' => $resultado[$j]['turno']);
+                }
+                echo json_encode($data);
             }
-            echo json_encode($data);
-        break;
+            break;
 
         case 'BuscarDatos':
             $resultado = $obj->getMedico($datos);
@@ -79,4 +89,4 @@ if (!isset($_POST['accion'])) {
       break;
     }
 }
-?>
+

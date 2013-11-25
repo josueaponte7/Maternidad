@@ -110,7 +110,7 @@ class Consultorio extends Conexion
         try {
 
             $data = array(
-                'consultorio'        => $consultorio
+                'consultorio' => $consultorio
             );
 
             $where = "num_consultorio='$num_consultorio'";

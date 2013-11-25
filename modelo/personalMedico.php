@@ -102,69 +102,45 @@ class personalMedico extends Conexion
 
     public function editpersonalMedico($datos)
     {
-        $cedula_pm = $datos['cedula_pm'];
-        $nombre    = $datos['nombre'];
-        $apellido  = $datos['apellido'];
-        $telefono  = $datos['telefono'];
-        $direccion = $datos['direccion'];
-        $num_cons  = $datos['num_cons'];
+        
+        $cedula_pm    = $datos['cedula_pm'];
+        $cod_telefono = $datos['cod_telefono'];
+        $telefono     = $datos['telefono'];
+        $direccion    = $datos['direccion'];
+        $num_cons     = $datos['num_cons'];
+        $cod_esp      = $datos['cod_esp'];
+        $cod_turno    = $datos['cod_turno'];
 
-        $variable = TRUE;
         try {
+           
+            $data  = array('cod_telefono'=>$cod_telefono,'telefono' => $telefono, 'direccion' => $direccion);
+            $where = "cedula_pm='$cedula_pm'";
 
-            if ($variable === FALSE) {
-            //if ($this->validar($cedula_pm, 'cedula_pm') === FALSE) {
+            $update = (boolean) $this->update('personal_medico', $data, $where);
 
-                $this->_mensaje = "Error";
-                throw new Exception($this->_mensaje, 300);
-            /*} else if ($this->validar($nombre, 'letras') === FALSE) {
-
-                $this->_mensaje = "Error";
-                throw new Exception($this->_mensaje, 300);
-            } else if ($this->validar($apellido, 'letras') === FALSE) {
-
-                $this->_mensaje = "Error";
-                throw new Exception($this->_mensaje, 300);
-            } else if ($this->validar($telefono, 'telefono') === FALSE) {
-
-                $this->_mensaje = "Error";
-                throw new Exception($this->_mensaje, 300);
-            } else if ($this->validar($direccion, 'direccion') === FALSE) {
-
-                $this->_mensaje = "Error";
-                throw new Exception($this->_mensaje, 300);*/
-            } else {
-
-                $num_cons  = $datos['num_cons'];
-
-
-                $data  = array('nombre'    => $nombre, 'apellido'  => $apellido, 'telefono'  => $telefono, 'direccion' => $direccion);
-                $where = "cedula_pm='$cedula_pm'";
-
-                $update = (boolean) $this->update('personal_medico', $data, $where);
-
-                if ($update === TRUE) {
-
-                    $data1   = array('num_consultorio' => $num_cons);
-                    $update1 = (boolean) $this->update('consultorio_medico', $data1, $where);
-                    if ($update1 === TRUE) {
-                        $this->_cod_msg   = 22;
-                        $this->_tipoerror = 'info';
-                        $this->_mensaje   = "Modificacion con exito";
-                        throw new Exception($this->_mensaje, $this->_cod_msg);
-
-                    } else {
-                        $this->_tipoerror = 'error';
-                        $this->_mensaje   = 'Ocurrio un error comuniquese con informatica';
-                        $this->_cod_msg   = 16;
-                        throw new Exception($this->_mensaje, $this->_cod_msg);
-                    }
+            if ($update === TRUE) {
+                
+                $where1 = "num_consultorio=$num_cons AND cod_turno=$cod_turno AND cod_especialidad=$cod_esp";
+                $cod_consu_horario = $this->get('consultorio_horario', 'cod_consu_horario', $where1);
+   
+                $data1   = array('cod_consu_horario' => $cod_consu_horario);
+                $update1 = (boolean) $this->update('consultorio_medico', $data1, $where);
+                if ($update1 === TRUE) {
+                    $this->_cod_msg   = 22;
+                    $this->_tipoerror = 'info';
+                    $this->_mensaje   = "El Registro ha sido  Modificado con exito";
+                    throw new Exception($this->_mensaje, $this->_cod_msg);
                 } else {
                     $this->_tipoerror = 'error';
-                    $this->_mensaje   = 'Ocurrio un error comuniquese con informatica';
+                    $this->_mensaje   = '<span style="color:#FF0000">Ocurrio un error comuniquese con informatica</span>';
                     $this->_cod_msg   = 16;
                     throw new Exception($this->_mensaje, $this->_cod_msg);
                 }
+            } else {
+                $this->_tipoerror = 'error';
+                $this->_mensaje   = 'Ocurrio un error comuniquese con informatica';
+                $this->_cod_msg   = 16;
+                throw new Exception($this->_mensaje, $this->_cod_msg);
             }
         } catch (Exception $e) {
             echo json_encode(array(
@@ -195,8 +171,8 @@ class personalMedico extends Conexion
         $cedula_pm    = $datos['cedula_pm'];
         $data = array(
             "tabla"     => "personal_medico pm,codigo_telefono AS ct ,consultorio_medico AS cm,consultorio_horario AS ch",
-            "campos"    => "pm.nombre,pm.apellido,ct.codigo,pm.telefono,CONCAT('0',CONCAT_WS(ct.codigo,pm.telefono)) AS telefono,pm.direccion,ch.cod_especialidad,ch.cod_turno,ch.num_consultorio",
-            "condicion" => "pm.cedula_pm=$cedula_pm  AND pm.cedula_pm=cm.cedula_pm AND cm.cod_consu_horario=ch.cod_consu_horario"
+            "campos"    => "pm.nombre,pm.apellido,ct.cod_telefono,ct.codigo,pm.telefono,pm.direccion,ch.cod_especialidad,ch.cod_turno,ch.num_consultorio",
+            "condicion" => "pm.cedula_pm=$cedula_pm  AND pm.cedula_pm=cm.cedula_pm AND ct.cod_telefono=pm.cod_telefono AND cm.cod_consu_horario=ch.cod_consu_horario"
         );
         $result = $this->row($data, FALSE);
         return $result;
