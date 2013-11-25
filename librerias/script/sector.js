@@ -45,11 +45,8 @@ $(document).ready(function() {
         if (accion === 'Agregar') {
 
             if ($municipio.val() == 0) {
-                $municipio.select2("container").addClass("error_select");
-                $('#s2id_municipio a.select2-choice').addClass('error_select');
+                $municipio.addClass('has-error');
             } else if ($sector.val() === null || $sector.val().length === 0 || /^\s+$/.test($sector.val())) {
-                $municipio.select2("container").removeClass("error");
-                $('#s2id_municipio a.select2-choice').removeClass('error');
                 $div_sector.addClass('has-error');
                 $sector.focus();
             } else if (!val_sectores.test($sector.val())) {
@@ -184,7 +181,7 @@ $(document).ready(function() {
 function limpiar() {
     $('form#frmsector select#municipio').select2('val', 0);
     $('form#frmsector #sector').val('');
-    $('div#div_sector').removeClass('has-error');
+    $('div,select').removeClass('has-error');
     $('#accion').remove();
     $('#btnaccion').val('Agregar');
 }

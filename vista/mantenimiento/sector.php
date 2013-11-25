@@ -27,13 +27,14 @@ $result_mun = $objmod->getMunicipio();
         <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . _css_estilos; ?>"/>
 
         <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . _css_select2; ?>"/>
-
+        <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . _css_select2_bootstrap; ?>"/>
         <script src="<?php echo _ruta_librerias_js . _js_jquery; ?>" type="text/javascript"></script>
         <script src="<?php echo _ruta_librerias_js . _js_dataTable; ?>" type="text/javascript"></script>
         <script src="<?php echo _ruta_librerias_js . _js_bootstrap_tooltip; ?>" type="text/javascript"></script>
         <script src="<?php echo _ruta_librerias_js . _js_select2; ?>" type="text/javascript"></script>
         <script src="<?php echo _ruta_librerias_js . _js_select2_es; ?>" type="text/javascript"></script>
         <script src="<?php echo _ruta_librerias_js . _js_validarcampos; ?>" type="text/javascript"></script>
+        <script src="<?php echo _ruta_librerias_js . _js_librerias; ?>" type="text/javascript"></script>
         <script src="<?php echo _ruta_librerias_script_js . 'sector.js' ?>" type="text/javascript"></script> 
         <style type="text/css">
             .error_select{
