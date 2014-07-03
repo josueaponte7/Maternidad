@@ -5,7 +5,7 @@ $(document).ready(function() {
             $('#usuario').focus();
             return  false;
         } else if ($('#clave').val() === null || $('#clave').val().length === 0 || /^\s+$/.test($('#clave').val())) {
-            $('#clave').focus().css({'border': '1px solid #FF0000'});
+            $('#clave').focus();
             return  false;
         } else {
 
