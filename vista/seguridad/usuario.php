@@ -3,17 +3,32 @@ session_start();
 define('BASEPATH', dirname(__DIR__) . '/');
 define('BASEURL', substr($_SERVER['PHP_SELF'], 0, - (strlen($_SERVER['SCRIPT_FILENAME']) - strlen(BASEPATH))));
 
-$_SESSION['url'] = 'vista/seguridad/usuario.php';
-if (isset($_GET['modulo'])) {
-    $_SESSION['s_modulo'] = $_GET['modulo'];
-}
-
 require '../../librerias/globales.php';
+require_once '../../modelo/seguridad/SubModulo.php';
 
-require_once '../../modelo/Autenticar.php';
-$obj           = new Autenticar();
-$result_perfil = $obj->getPerfil();
-$result        = $obj->getusuariosAll();
+$obj_submodulo = new SubModulo();
+if (isset($_GET['modulo'])) {
+    $_SESSION['cod_modulo'] = $_GET['modulo'];
+    $obj_submodulo->url($_SERVER['SCRIPT_NAME'], $_GET['modulo']);
+}
+require_once '../../modelo/seguridad/Usuario.php';
+$obj           = new Usuario();
+
+$datos_perfil['tabla']  = 's_perfil';
+$datos_perfil['campos'] = 'codigo_perfil,perfil';
+$result_perfil = $obj->getPerfil($datos_perfil);
+
+$datos['sql'] = "SELECT 
+                    u.id_usuario,
+                    u.usuario, 
+                    IF(u.activo=1,'Activo','Inactivo') AS activo,
+                    p.perfil,
+                    DATE_FORMAT(u.fecha_creacion, '%d-%m-%Y') AS fecha
+                FROM s_usuario AS u 
+                INNER JOIN s_perfil  AS p ON u.codigo_perfil=p.codigo_perfil";
+$result = $obj->getUsuario($datos);
+$img_mod                = _img_dt . _img_dt_mod;
+$img_del                = _img_dt . _img_dt_del;
 ?>
 
 <!DOCTYPE html>
@@ -67,7 +82,7 @@ $result        = $obj->getusuariosAll();
                                         <td width="80" height="40" align="left">Repetir Clave:</td>
                                         <td width="235">
                                             <div id="div_repclave" style="margin-top: 10px" class="form-group">
-                                                <input type="password" class="form-control " id="repclave" name="repclave" value="" maxlength="20"/>
+                                                <input type="password" class="form-control input-sm" id="repclave" name="repclave" value="" maxlength="20"/>
                                             </div>
                                         </td>
                                         <td width="59"><span class="obligatorio">*</span></td>
@@ -75,12 +90,12 @@ $result        = $obj->getusuariosAll();
                                         <td width="38" height="40" align="left">Perfil:</td>
                                         <td width="221">
                                             <div id="div_perfil" style="margin-top: 10px;" class="form-group">
-                                                <select id="perfil" name="perfil" class="form-control select2">
+                                                <select id="perfil" name="perfil" class="form-control select2 input-sm">
                                                     <option value="0">Seleccione</option>
                                                     <?php
                                                     for ($i = 0; $i < count($result_perfil); $i++) {
                                                         ?>
-                                                        <option value="<?php echo $result_perfil[$i]['codigo_perfil'] ?>"><?php echo $result_perfil[$i]['perfil'] ?></option>
+                                                        <option  value="<?php echo $result_perfil[$i]['codigo_perfil'] ?>"><?php echo $result_perfil[$i]['perfil'] ?></option>
                                                     <?php }
                                                     ?>
                                                 </select>
@@ -91,9 +106,15 @@ $result        = $obj->getusuariosAll();
                                     <tr>
                                         <td width="80" height="40" align="left">Estatus:</td>
                                         <td width="235">
-                                            <div style="width: 250px;" id="swestatus" class="make-switch" data-on-label="Activo" data-off-label="Inactivo" data-on="success" data-off="danger">
-                                                <input type="checkbox" checked="checked">
-                                                <input type="hidden" id="estatus" name="estatus" value="TRUE" />
+                                            <div class="btn-group" data-toggle="buttons" >
+                                                <label id="l_u_activo" class="btn btn-success active btn-sm">
+                                                    <input  type="radio" name="u_estatus" checked="checked" id="u_activo" value="1">
+                                                    Activo
+                                                </label>
+                                                <label id="l_u_inactivo" class="btn btn-default btn-sm">
+                                                    <input type="radio" name="u_estatus" id="u_inactivo" value="0">
+                                                    Inactivo
+                                                </label>
                                             </div>
                                         </td>
                                         <td width="59"><span class="obligatorio">*</span></td>
@@ -105,8 +126,8 @@ $result        = $obj->getusuariosAll();
                                     <tr>
                                         <td  colspan="6" align="center">
                                             <div id="botones">
-                                                <input class="btn btn-default" id="btnaccion" name="btnaccion" type="button" value="Agregar" />
-                                                <input class="btn btn-default" id="btnlimpiar" name="btnlimpiar" type="button" value="Limpiar" />
+                                                <input class="btn btn-default btn-sm" id="btnaccion" name="btnaccion" type="button" value="Agregar" />
+                                                <input class="btn btn-default btn-sm" id="btnlimpiar" name="btnlimpiar" type="button" value="Limpiar" />
                                             </div>
                                         </td>
                                     </tr>
@@ -119,12 +140,12 @@ $result        = $obj->getusuariosAll();
                             <table id="tabla_usuarios" border="0" cellspacing="1"  class="dataTable" >
                                 <thead>
                                     <tr>
+                                        <th>ID</th>
                                         <th>Usuario</th>
                                         <th>Perfil</th>
                                         <th>Estatus</th>
                                         <th>Fecha</th>
-                                        <th>Modificar</th>
-                                        <th>Eliminar</th>
+                                        <th>Acci&oacute;n</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -132,16 +153,20 @@ $result        = $obj->getusuariosAll();
                                     for ($i = 0; $i < count($result); $i++) {
                                         ?>
                                         <tr>
+                                            <td><?php echo $result[$i]['id_usuario']; ?></td>
                                             <td><?php echo $result[$i]['usuario']; ?></td>
                                             <td><?php echo $result[$i]['perfil']; ?></td>
-                                            <td><?php echo $result[$i]['estatus']; ?></td>
+                                            <td><?php echo $result[$i]['activo']; ?></td>
                                             <td><?php echo $result[$i]['fecha']; ?></td>
                                             <td>
-                                                <img class="modificar"  title="Modificar" style="cursor: pointer" src="<?php echo _img_datatable . _img_datatable_modificar ?>" width="18" height="18" alt="Modificar"/>
-                                            </td>
-
-                                            <td>
-                                                <img class="eliminar"  title="Eliminar" style="cursor: pointer" src="<?php echo _img_datatable . _img_datatable_eliminar ?>" width="18" height="18"  alt="Eliminar"/>
+                                                <img class="modificar"  title="Modificar" style="cursor: pointer" src="<?php echo $img_mod; ?>" width="18" height="18" alt="Modificar"/>
+                                                <?php 
+                                                if($result[$i]['id_usuario'] > 1){
+                                                ?>
+                                                    <img class="eliminar"  title="Eliminar" style="cursor: pointer" src="<?php echo $img_del; ?>" width="18" height="18"  alt="Eliminar"/>
+                                                <?php 
+                                                }
+                                                ?>
                                             </td>
                                         </tr>
                                         <?php

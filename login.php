@@ -5,12 +5,6 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <script src="librerias/js/jquery.1.10.js" type="text/javascript"></script> 
         <script src="librerias/script/login.js" type="text/javascript"></script> 
-        <script type="text/javascript">
-            $(document).ready(function() {
-                $('input#usuario').focus();
-                //$('input').first().focus();
-            });
-        </script>
         <style type="text/css">
 
             div#logueo{
@@ -35,7 +29,7 @@
             }
         </style>
     </head>
-    <body style="background-image:url(degradado.jpg);height:200px;">        
+    <body style="background-image:url(degradado.jpg);height:200px;">   
         <div id="logueo">
             <form name="frmlogin" autocomplete="off" id="frmlogin" method="POST" enctype="multipart/form-data">
               <table width="352" align="center" cellpadding="0" cellspacing="0" id="login">

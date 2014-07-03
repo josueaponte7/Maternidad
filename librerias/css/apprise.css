@@ -79,3 +79,10 @@
     padding:5px 10px;
     height: 30px;
 }
+div.msj-danger{
+    color:#FF0000 !important;
+    text-align:center !important;
+    font-size:13px !important;
+    position:relative !important ;
+    margin:auto !important;
+}

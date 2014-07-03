@@ -3,18 +3,17 @@ session_start();
 define('BASEPATH', dirname(__DIR__) . '/');
 define('BASEURL', substr($_SERVER['PHP_SELF'], 0, - (strlen($_SERVER['SCRIPT_FILENAME']) - strlen(BASEPATH))));
 
-require_once '../../modelo/Seguridad.php';
+require_once '../../librerias/globales.php';
+require_once '../../modelo/mantenimientos/Especialidad.php';
 
-$seguridad = new Seguridad();
+$obj_mant = new Especialidad();
 if (isset($_GET['modulo'])) {
-    $seguridad->url($_SERVER['SCRIPT_FILENAME'], $_GET['modulo']);
+    $_SESSION['cod_modulo'] = $_GET['modulo'];
+    $obj_mant->url($_SERVER['SCRIPT_NAME'], $_GET['modulo']);
 }
 
-require '../../librerias/globales.php';
-
-require_once '../../modelo/Especialidad.php';
-$objmod = new Especialidad();
-$result = $objmod->getEspecialidadAll();
+$img_mod = _img_dt . _img_dt_mod;
+$img_del = _img_dt . _img_dt_del;
 ?>
 
 <!DOCTYPE html>
@@ -22,16 +21,16 @@ $result = $objmod->getEspecialidadAll();
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . _css_boostrap; ?>"/>
+        <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . _css_boostrap_theme; ?>"/>
         <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . _css_estilos; ?>"/>
-        <link rel="stylesheet" type="text/css" href="<?php echo _ruta_librerias_css . _css_apprise; ?>"/>
 
         <script src="<?php echo _ruta_librerias_js . _js_jquery; ?>" type="text/javascript"></script>
+        <script src="<?php echo _ruta_librerias_js . _js_bootstrap; ?>" type="text/javascript"></script>
         <script src="<?php echo _ruta_librerias_js . _js_bootstrap_tooltip; ?>" type="text/javascript"></script>
         <script src="<?php echo _ruta_librerias_js . _js_dataTable; ?>" type="text/javascript"></script>
-        <script src="<?php echo _ruta_librerias_js . _js_apprise; ?>" type="text/javascript"></script>
         <script src="<?php echo _ruta_librerias_js . _js_validarcampos; ?>" type="text/javascript"></script>
+        <script src="<?php echo _ruta_librerias_js . _js_librerias; ?>" type="text/javascript"></script>
         <script src="<?php echo _ruta_librerias_script_js . 'especialidad.js' ?>" type="text/javascript"></script>
-
 
     </head>
     <body>
@@ -60,8 +59,8 @@ $result = $objmod->getEspecialidadAll();
                                     <tr>
                                         <td  colspan="3" align="center">
                                             <div id="botones">
-                                                <input class="btn btn-default" id="btnaccion" name="btnaccion" type="button" value="Agregar" />
-                                                <input class="btn btn-default" id="btnlimpiar" name="btnlimpiar" type="button" value="Limpiar" />
+                                                <input class="btn btn-default btn-sm" id="btnaccion" name="btnaccion" type="button" value="Agregar" />
+                                                <input class="btn btn-default btn-sm" id="btnlimpiar" name="btnlimpiar" type="button" value="Limpiar" />
                                             </div>
                                         </td>
                                     </tr>
@@ -82,15 +81,19 @@ $result = $objmod->getEspecialidadAll();
                                 </thead>
                                 <tbody>
                                     <?php
-                                    for ($i = 0; $i < count($result); $i++) {
-                                        ?>
-                                        <tr>
-                                            <td><?php echo $result[$i]['cod_especialidad']; ?></td>
-                                            <td><?php echo $result[$i]['especialidad']; ?></td>
-                                            <td><img class="modificar"  title="Modificar" style="cursor: pointer" src="<?php echo _img_datatable . _img_datatable_modificar ?>" width="18" height="18" alt="Modificar"/></td>
-                                            <td><img class="eliminar"  title="Eliminar" style="cursor: pointer" src="<?php echo _img_datatable . _img_datatable_eliminar ?>" width="18" height="18"  alt="Eliminar"/></td>
-                                        </tr>
-                                        <?php
+                                    $result  = $obj_mant->getEspecialidadAll();
+                                    $es_array  = is_array($result) ? TRUE : FALSE;
+                                    if($es_array === TRUE){
+                                        for ($i = 0; $i < count($result); $i++) {
+                                            ?>
+                                            <tr>
+                                                <td><?php echo $result[$i]['cod_especialidad']; ?></td>
+                                                <td><?php echo $result[$i]['especialidad']; ?></td>
+                                                <td><img class="modificar"  title="Modificar" style="cursor: pointer" src="<?php echo $img_mod ; ?>" width="18" height="18" alt="Modificar"/></td>
+                                                <td><img class="eliminar"  title="Eliminar" style="cursor: pointer" src="<?php echo $img_del ?>" width="18" height="18"  alt="Eliminar"/></td>
+                                            </tr>
+                                            <?php
+                                        }
                                     }
                                     ?>
                                 </tbody>

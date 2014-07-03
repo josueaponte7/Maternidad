@@ -1,9 +1,3 @@
-$.tools.dateinput.localize("es", {
-    months: 'Enero,Febrero,Marzo,Abril,Mayo,Junio,Julio,Agosto,Septiembre,Octubre,Novimbre,Dicimbre',
-    shortMonths: 'Ene,Feb,Mar,Abr,May,Jun,Jul,Aog,Sep,Oct,Nov,Dic',
-    days: 'Domingo,Lunes,Martes,Miercoles,Jueves,Viernes,Sabado',
-    shortDays: 'Dom,Lun,Mar,Mie,Jue,Vie,Sab'
-});
 
 $(document).ready(function() {
     var THistoriaparto = $('#tabla').dataTable({
@@ -33,15 +27,11 @@ $(document).ready(function() {
     var $peso             = $frmespecialidad.find('input:text#tamano');
     var $observacion      = $frmespecialidad.find('input:text#observacion');
 
-    $fecha_nacimiento.dateinput({
-        lang: 'es',
-        format: 'dd-mm-yyyy', // the format displayed for the user
-        selectors: true, // whether month/year dropdowns are shown
-        offset: [10, 20], // tweak the position of the calendar
-        speed: 'fast', // calendar reveal speed
-        firstDay: 0,
-        max: -1,
-        yearRange: [-3,1]
+    $fecha_nacimiento.datepicker({
+        language: "es",
+        format: 'dd/mm/yyyy',
+        startDate: "-3y",
+        endDate: "Today"
     });
 });
 

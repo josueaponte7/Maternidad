@@ -1,10 +1,3 @@
-$.tools.dateinput.localize("es", {
-    months: 'Enero,Febrero,Marzo,Abril,Mayo,Junio,Julio,Agosto,Septiembre,Octubre,Novimbre,Dicimbre',
-    shortMonths: 'Ene,Feb,Mar,Abr,May,Jun,Jul,Aog,Sep,Oct,Nov,Dic',
-    days: 'Domingo,Lunes,Martes,Miercoles,Jueves,Viernes,Sabado',
-    shortDays: 'Dom,Lun,Mar,Mie,Jue,Vie,Sab'
-});
-
 $(document).ready(function() {
     var THistoria = $('#tabla').dataTable({
         "iDisplayLength": 5,
@@ -21,119 +14,187 @@ $(document).ready(function() {
         ]
     });
 
-    var $frmhistoria = $('form#frmhistoria');
-    var $text_nac = $frmhistoria.find('input:text#text_nac');
-    var $hnac = $frmhistoria.find('input:hidden#hnac');
-    var $historia = $frmhistoria.find('input:text#historia');
-    var $hhistoria = $frmhistoria.find('input:hidden#hhistoria');
-    var $cedula_p = $frmhistoria.find('input:text#cedula_p');
-    var $nombre = $frmhistoria.find('input:text#nombre');
-    var $apellido = $frmhistoria.find('input:text#apellido');
-    var $fecha = $frmhistoria.find('input:text#fecha_nacimiento');
-    var $edad = $frmhistoria.find('input:text#edad');
-    var $tamano = $frmhistoria.find('input:text#tamano');
-    var $peso = $frmhistoria.find('input:text#peso');
-    var $tension = $frmhistoria.find('input:text#tension');
-    var $fur = $frmhistoria.find('input:text#fur');
-    var $fpp = $frmhistoria.find('input:text#fpp');
+    var $frmhistoria   = $('form#frmhistoria');
+    var $btn_nac       = $frmhistoria.find('button:button#btn_nac');
+    var $hnac          = $frmhistoria.find('input:hidden#hnac');
+    
+    var $btn_nac_m     = $frmhistoria.find('button:button#btn_nac_m');
+    var $hnac_m        = $frmhistoria.find('input:hidden#hnac_m');
+    
+    var $historia      = $frmhistoria.find('input:text#historia');
+    var $hhistoria     = $frmhistoria.find('input:hidden#hhistoria');
+    var $cedula_p      = $frmhistoria.find('input:text#cedula_p');
+    var $cedula_pm     = $frmhistoria.find('input:text#cedula_pm');
+    var $nombre        = $frmhistoria.find('input:text#nombre');
+    var $apellido      = $frmhistoria.find('input:text#apellido');
+    var $fecha         = $frmhistoria.find('input:text#fecha_nacimiento');
+    var $cita          = $frmhistoria.find('input:text#fecha_cita');
+    var $edad          = $frmhistoria.find('input:text#edad');
+    var $tamano        = $frmhistoria.find('input:text#tamano');
+    var $consultorio   = $frmhistoria.find('select#num_consultorio');
+    var $peso          = $frmhistoria.find('input:text#peso');
+    var $tension       = $frmhistoria.find('input:text#tension');
+    var $fur           = $frmhistoria.find('input:text#fur');
+    var $fpp           = $frmhistoria.find('input:text#fpp');
     var $lugar_control = $frmhistoria.find('textarea#lugar_control');
-    var $diagnostico = $frmhistoria.find('textarea#diagnostico');
-    var $observacion = $frmhistoria.find('textarea#observacion');
-    var $btnaccion = $frmhistoria.find('input:button#btnaccion');
-    var $btnlimpiar = $frmhistoria.find('input:button#btnlimpiar');
-    var $btnbuscar = $frmhistoria.find('input:button#btnbuscar');
-    var $div_cedula = $frmhistoria.find('div#div_cedula');
-
-    var val_cedula = '1234567890';
-    var val_direccion = ' abcdefghijklmnopqrstuvwyzáéíóúñ#/º-';
-
+    var $diagnostico   = $frmhistoria.find('textarea#diagnostico');
+    var $observacion   = $frmhistoria.find('textarea#observacion');
+    var $btnaccion     = $frmhistoria.find('input:button#btnaccion');
+    var $btnlimpiar    = $frmhistoria.find('input:button#btnlimpiar');
+    var $btnbuscar     = $frmhistoria.find('input:button#btnbuscar');
+    var $btnbuscar_m   = $frmhistoria.find('input:button#btnbuscar_m');
+    var $btnver        = $frmhistoria.find('input:button#btnver');
+    var $div_cedula    = $frmhistoria.find('div#div_cedula');
+    var $div_cedula_pm = $frmhistoria.find('div#div_cedula_pm');
+    var val_cedula     = '1234567890';
+    var val_direccion  = ' abcdefghijklmnopqrstuvwyzáéíóúñ#/º-';
+    var val_fecha      = '1234567890\/\/';
+    var val_tamano     = ' mc1234567890\.\,';
+    var val_peso       = ' kg1234567890\.';
+    var val_peso       = ' abcdefghijklmnopqrstuvwxyz1234567890\-';
+    
     $cedula_p.validar(val_cedula);
     $lugar_control.validar(val_direccion);
     $diagnostico.validar(val_direccion);
     $observacion.validar(val_direccion);
-
-    var dateinput = $fur.dateinput({
-        lang: 'es',
-        format: 'dd/mm/yyyy', // the format displayed for the user
-        selectors: true, // whether month/year dropdowns are shown
-        min: -270, // min selectable day (100 days backwards)
-        max: -1, // max selectable day (100 days onwards)
-        offset: [10, 20], // tweak the position of the calendar
-        speed: 'fast', // calendar reveal speed
-        firstDay: 0
+    $fur.validar(val_fecha);
+    $fpp.validar(val_fecha);
+    $tamano.validar(val_tamano);
+    $peso.validar(val_peso);
+    $tension.validar(val_peso);
+    
+    $consultorio.select2();
+    
+    $fur.datepicker({
+        language: "es",
+        format: 'dd/mm/yyyy',
+        startDate: "-9m",
+        endDate: "Hoy",
+        todayBtn: "linked",
+        autoclose: true,
+        orientation: "top auto"
     });
 
-    var dateinput = $fpp.dateinput({
-        lang: 'es',
-        format: 'dd/mm/yyyy', // the format displayed for the user
-        selectors: true, // whether month/year dropdowns are shown
-        min: 1, // min selectable day (100 days backwards)
-        max: 270, // max selectable day (100 days onwards)
-        offset: [10, 20], // tweak the position of the calendar
-        speed: 'fast', // calendar reveal speed
-        firstDay: 0
+    $fpp.datepicker({
+        language: "es",
+        format: 'dd/mm/yyyy',
+        startDate: "Hoy",
+        endDate: "+9m",
+        todayBtn: "linked",
+        autoclose: true,
+        orientation: "top auto"
     });
 
-
-    $("ul#nacionalidad > li > span").click(function() {
-
+    $('#imgcedula').tooltip({
+        html: true,
+        placement: 'right',
+        title: '<span class="requerido">Requerido</span><br/>La C&eacute;dula no puede estar en <span class="alerta">blanco</span>,<br/> no debe tener menos de <span class="alerta">7 digitos</span>, ni comenzar con 0,<br/> debe seleccionar la nacionalidad en<span class="alerta"> (N)</span><br/> Haga Click en buscar par obtener los datos de la C&eacute;dula'
+    });
+    
+   $("ul#nacionalidad > li > span").click(function() {
         var nac = $(this).attr('id');
         if (nac != 'N') {
+            $btn_nac.removeClass('btn-danger');
+            if (nac == 'V') {
+                var tamano = 10;
+            } else {
+                tamano = 11;
+            }
             $hnac.val(nac);
-            $text_nac.val(nac + '-');
-            $cedula_p.focus();
+            $cedula_p.attr('maxlength', tamano).val(nac + '-').focus();
         } else {
+            $btnaccion.prop('disabled', true);
             $hnac.val('');
-            $text_nac.val('');
             $cedula_p.val('');
         }
     });
-
-    var url = '../../controlador/historia.php';
+    
+    
+    $("ul#nacionalidad_m > li > span").click(function() {
+        var nac = $(this).attr('id');
+        if (nac != 'N') {
+            $btn_nac_m.removeClass('btn-danger');
+            if (nac == 'V') {
+                var tamano = 10;
+            } else {
+                tamano = 11;
+            }
+            $hnac_m.val(nac);
+            $cedula_pm.attr('maxlength', tamano).val(nac + '-').focus();
+        } else {
+            
+            $hnac_m.val('');
+            $cedula_pm.val('');
+        }
+    });
+    
+    
+    $cedula_p.keypress(function(e) {
+        var carac = $(this).val().length;
+        if (e.which == 8 && carac < 3) {
+            e.preventDefault();
+        }
+    });
+    
+    $cedula_pm.keypress(function(e) {
+        var carac = $(this).val().length;
+        if (e.which == 8 && carac < 3) {
+            e.preventDefault();
+        }
+    });
+    var url = '../../controlador/paciente/historia.php';
     $btnbuscar.on('click', function() {
+     
         var cedula_p = $cedula_p.val();
+        $tamano.prop('disabled', false);
+        $peso.prop('disabled', false);
+        $tension.prop('disabled', false);
+        $fpp.prop('disabled', false).prop('readonly', true).css('background-color', '#FFFFFF');
+        $fur.prop('disabled',false).prop('readonly',true).css('background-color','#FFFFFF');
+        $lugar_control.prop('disabled', false);
+        $diagnostico.prop('disabled', false);
+        $observacion.prop('disabled', false);
+        $btnaccion.prop('disabled', false);
+        $consultorio.select2('focus');
+        $btnver.fadeOut('slow');
         if (cedula_p != '') {
-            $.post(url, {cedula_p: cedula_p, accion: 'BuscarDatos'}, function(data) {
-
-                var cod_msg = parseInt(data.error_codmensaje);
-                var mensaje = data.error_mensaje;
-                //var tipo    = data.tipo_error;
-                if (cod_msg === 17) {
-                    $nombre.val('');
-                    $apellido.val('');
-                    $fecha.val('');
-                    $edad.val('');
-                    window.parent.apprise(mensaje, {'textOk': 'Aceptar'}, function() {
+            $.post(url, {cedula_p: cedula_p, accion: 'BuscarDatos'}, function(resultado) {
+                    
+                if(resultado.error == 'error'){
+                     var mensaje = resultado.mensaje;
+                     window.parent.apprise(mensaje, {'textOk': 'Aceptar'}, function() {
+                        $div_cedula.addClass('has-error');
                         $cedula_p.focus();
                     });
-                } else if (cod_msg > 16) {
-                    $nombre.val('');
-                    $apellido.val('');
-                    $fecha.val('');
-                    $edad.val('');
-                    window.parent.apprise(mensaje, {'textOk': 'Aceptar'}, function() {
-                        $cedula_p.focus();
-                    });
-                } else {
-                    $hhistoria.val(data.his_o);
-                    $historia.val(data.historia);
-                    $nombre.val(data.nombre);
-                    $apellido.val(data.apellido);
-                    $fecha.val(data.fecha);
-                    $edad.val(data.edad);
-                    $tamano.val(data.tamano);
-                    $peso.val(data.peso);
-                    $tension.val(data.tension);
-
-                    $fpp.val(data.fpp);
-                    $fur.val(data.fur);
-                    $lugar_control.val(data.lugar_control);
-                    $diagnostico.val(data.diagnostico);
-                    $observacion.val(data.observacion_medica);
-
-                    $btnaccion.prop('disabled', false);
+                }else{
+                   
+                    $historia.val(resultado.historia);
+                    $nombre.val(resultado.nombre);
+                    $apellido.val(resultado.apellido);
+                    $fecha.val(resultado.fecha_nacimiento);
+                    $edad.val(resultado.edad);
+                    $fur.val(resultado.fur);
+                    $fpp.val(resultado.fpp);
+                    $lugar_control.val(resultado.lugar_control);
+                    $cita.val(resultado.fecha_ultima_cita);
+                    if(resultado.existe_cita == 0){
+                        var datos = resultado.datos.split(';');
+                        $btnver.fadeIn('slow');
+                        $btnaccion.prop('disabled',true);
+                        $lugar_control.prop('disabled',true);
+                        $tamano.val(datos[0]).prop('disabled',true);
+                        $peso.val(datos[1]).prop('disabled',true);
+                        $tension.val(datos[2]).prop('disabled',true);
+                        $diagnostico.val(datos[3]).prop('disabled',true);
+                        $observacion.val(datos[4]).prop('disabled',true);
+                    }
+                    
+                    /*if(resultado[15] > 0){
+                        $btnver.fadeIn('slow');
+                    }*/
                 }
-            }, 'json');
+                
+            },'json');
         } else {
             window.parent.apprise('Debe ingresar el Num&eacute;ro de C&eacute;dula', {'textOk': 'Aceptar'}, function() {
                 $div_cedula.addClass('has-error');
@@ -142,52 +203,97 @@ $(document).ready(function() {
         }
     });
 
-
-
+    
+    
+    var url_m = '../../controlador/medico/medico.php';
+    $btnbuscar_m.on('click', function() {
+        var cedula_pm = $cedula_pm.val();
+        if (cedula_pm != '') {
+            $.post(url_m, {cedula_pm: cedula_pm, accion: 'BuscarDatos'}, function(resultado) {
+                if(resultado != 0){
+                    $('#nombre_m').val(resultado.nombre+' '+resultado.apellido);
+                }else{
+                   window.parent.apprise('<span style="color:#FF0000">El N&uacute;mero de C\u00e9dula no se encuentra registrado</span>', {'textOk': 'Aceptar'}, function() {
+                        $div_cedula_pm.addClass('has-error');
+                        $cedula_pm.focus();
+                    }); 
+                }
+            },'json');
+        } else {
+            window.parent.apprise('Debe ingresar el Num&eacute;ro de C&eacute;dula', {'textOk': 'Aceptar'}, function() {
+                $div_cedula_pm.addClass('has-error');
+                $cedula_pm.focus();
+            });
+        }
+    });
+    
+    $('#otros_dt span').click(function(e) {
+        e.preventDefault();
+        var id = $(this).attr('id');
+        $('span:not('+id+')').css('border-top','').tab('show');
+    });
     $btnaccion.click(function() {
-        $('#accion').remove();
-        var accion = $(this).val();
-        var historia = $historia.val();
+        //;
 
+        if ($cedula_p.val().length === 2) {
+            $div_cedula.addClass('has-error');
+            $cedula_p.focus();
+        } else if ($consultorio.val() == 0) {
+            $consultorio.addClass('has-error');
+        } else if ($hnac_m.val() == '') {
+            $btn_nac_m.addClass('btn-danger');
+            $btn_nac_m.focus();
+        }else if ($cedula_pm.val().length === 2) {
+            $div_cedula_pm.addClass('has-error');
+            $cedula_pm.focus();
+        }else if($tamano.val() === null || $tamano.val().length === 0 || /^\s+$/.test($tamano.val())) {
+            $('#s_medicos').css('border-top','2px solid #FF0000').tab('show');
+            $('#div_tamano').addClass('has-error');
+            $tamano.focus();
+        }else if($peso.val() === null || $peso.val().length === 0 || /^\s+$/.test($peso.val())) {
+            $('#s_medicos').css('border-top','2px solid #FF0000').tab('show');
+            $('#div_peso').addClass('has-error');
+            $peso.focus();
+        }else if($tension.val() === null || $tension.val().length === 0 || /^\s+$/.test($tension.val())) {
+            $('#s_medicos').css('border-top','2px solid #FF0000').tab('show');
+            $('#div_tension').addClass('has-error');
+            $tension.focus();
+        } else {
+            $('#accion').remove();
+            var accion = $(this).val();
+            
+            var $accion = ' <input type="hidden" id="accion" name="accion" value="' + accion + '" />';
 
-        var $accion = ' <input type="hidden" id="accion" name="accion" value="' + accion + '" />';
+            $($accion).prependTo($(this));
+            $('#historia').prop('disabled',false);
+            
+            $.post(url, $frmhistoria.serialize(), function(data) {
+                $('#historia').prop('disabled',true);
+                var cod_msg = parseInt(data.error_codmensaje);
+                var mensaje = data.error_mensaje;
 
-        $($accion).prependTo($(this));
-        $($hhistoria).prependTo($(this));
-        $.post(url, $frmhistoria.serialize(), function(data) {
-            var cod_msg = parseInt(data.error_codmensaje);
-            var mensaje = data.error_mensaje;
-            var tipo = data.tipo_error;
-            limpiar();
-            window.parent.apprise(mensaje, {'textOk': 'Aceptar'});
-        }, 'json');
+                window.parent.apprise(mensaje, {'textOk': 'Aceptar'});
+                if (cod_msg == 21) {
+                    limpiar();
+                    $('#otros_dt span').css('border-top','1px solid #ddd;');
+                    $consultorio.select2('val', 0);
+                }
+            }, 'json');
+        }
     });
 
     $btnlimpiar.click(function() {
         limpiar();
     });
+    $btnver.click(function() {
+        var url = '../reporte/ver_historia.php?cedula_p='+$cedula_p.val();
+        window.open(url);
+    });
 });
 
 function limpiar()
 {
-    var $frmhistoria = $('form#frmhistoria');
-    $('input:text#text_nac').val('')
-    $('input:hidden#hnac');
-    $('input:text#historia').val('');
-    $('input:hidden#hhistoria');
-    $('input:text#cedula_p').val('');
-    $('input:text#nombre').val('');
-    $('input:text#apellido').val('');
-    $('input:text#fecha_nacimiento').val('');
-    $('input:text#edad');
-    $('input:text#tamano').val('');
-    $('input:text#peso').val('');
-    $('input:text#tension').val('');
-    $('input:text#fur').val('');
-    $('input:text#fpp').val('');
-    $('textarea#lugar_control').val('');
-    $('textarea#diagnostico').val('');
-    $('textarea#observacion').val('');
+    $('input:text,textarea,hidden').val('');
     $('#accion').remove();
     $('#fila').remove();
 }

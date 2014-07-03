@@ -35,7 +35,7 @@ $(document).ready(function() {
 
     var letras = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]{5,50}$/;
 
-    var url = '../../controlador/especialidad.php';
+    var url = '../../controlador/mantenimiento/especialidad.php';
     $btnaccion.on('click', function() {
 
         $('#accion').remove();
@@ -56,17 +56,26 @@ $(document).ready(function() {
             } else {
                 var modificar = '<img class="modificar" title="Modificar" style="cursor: pointer" src="../../imagenes/datatable/modificar.png" width="18" height="18" alt="Modificar"/>';
                 var eliminar  = '<img class="eliminar"  title="Eliminar"  style="cursor: pointer" src="../../imagenes/datatable/eliminar.png"  width="18" height="18" alt="Eliminar" />';
+                
+                
+                var codigo = 1;
+                var TotalRow = TEspecialidad.fnGetData().length;
+                if(TotalRow > 0){
+                    var lastRow   = TEspecialidad.fnGetData(TotalRow-1);
+                    var codigo    = parseInt(lastRow[0])+1;
+                }
 
+                var $cod_modulo = '<input type="hidden" id="cod_especialidad"  value="' + codigo + '" name="cod_especialidad">';
+                $($cod_modulo).prependTo($frmespecialidad);
                 $.post(url, $frmespecialidad.serialize(), function(data) {
                     var cod_msg = parseInt(data.error_codmensaje);
                     var mensaje = data.error_mensaje;
                     var tipo    = data.tipo_error;
                     window.parent.apprise(mensaje, {'textOk': 'Aceptar'});
                     if (cod_msg === 21) {
-                         var codigo = TEspecialidad.fnGetData().length;
-                         codigo = codigo + 1;
                          TEspecialidad.fnAddData([codigo, $especialidad.val(), modificar, eliminar]);
                          limpiar();
+                         $('#cod_especialidad').remove();
                     }
                 },'json');
             }
@@ -121,9 +130,9 @@ $(document).ready(function() {
     $('table#tabla').on('click', 'img.eliminar', function() {
 
         limpiar();
-        var padre        = $(this).closest('tr');
+        var padre            = $(this).closest('tr');
         var cod_especialidad = padre.children('td:eq(0)').text();
-        var nRow = $(this).parents('tr')[0];
+        var nRow             = $(this).parents('tr')[0];
 
         window.parent.apprise('&iquest;Desea Eliminar los datos del registro?', {'verify': true, 'textYes': 'Aceptar', 'textNo': 'Cancelar'}, function(r) {
             if (r) {

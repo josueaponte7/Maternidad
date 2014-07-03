@@ -2000,8 +2000,8 @@
 			
             var sSearchStr = oSettings.oLanguage.sSearch;
             sSearchStr = (sSearchStr.indexOf('_INPUT_') !== -1) ?
-            sSearchStr.replace('_INPUT_', '<input type="text" />') :
-            sSearchStr==="" ? '<input type="text" />' : sSearchStr+' <input type="text" />';
+            sSearchStr.replace('_INPUT_', '<input type="text" id="buscar" class="form-control input-sm"/>') :
+            sSearchStr==="" ? '<input type="text" id="buscar" class="form-control input-sm"/>' :'<div class="form-inline"><label class="control-label" >'+ sSearchStr+'</label>&nbsp;&nbsp;&nbsp;<div class="form-group"><input type="text" style="padding:5px 10px" class="form-control input-sm" placeholder="'+sSearchStr+'"/></div></div>';
 			
             var nFilter = document.createElement( 'div' );
             nFilter.className = oSettings.oClasses.sFilter;
@@ -2680,7 +2680,7 @@
 			
             /* This can be overruled by not using the _MENU_ var/macro in the language variable */
             var sName = 'name="'+oSettings.sTableId+'_length"';
-            var sStdMenu = '<select size="1" '+sName+'>';
+            var sStdMenu = '<div class="form-group"><select size="1" id="select_mostrar" '+sName+' class="form-control select2 input-sm">';
             var i, iLen;
             var aLengthMenu = oSettings.aLengthMenu;
 			
@@ -2699,7 +2699,7 @@
                     sStdMenu += '<option value="'+aLengthMenu[i]+'">'+aLengthMenu[i]+'</option>';
                 }
             }
-            sStdMenu += '</select>';
+            sStdMenu += '</select><div>';
 			
             var nLength = document.createElement( 'div' );
             if ( !oSettings.aanFeatures.l )
@@ -2707,7 +2707,7 @@
                 nLength.id = oSettings.sTableId+'_length';
             }
             nLength.className = oSettings.oClasses.sLength;
-            nLength.innerHTML = '<label>'+oSettings.oLanguage.sLengthMenu.replace( '_MENU_', sStdMenu )+'</label>';
+            nLength.innerHTML = '<div class="form-inline">'+oSettings.oLanguage.sLengthMenu.replace( '_MENU_', sStdMenu )+'<div>';
 			
             /*
 			 * Set the length to the current display length - thanks to Andrea Pavlovic for this fix,

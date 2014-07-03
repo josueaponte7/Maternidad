@@ -1,12 +1,6 @@
-$.tools.dateinput.localize("es", {
-    months: 'Enero,Febrero,Marzo,Abril,Mayo,Junio,Julio,Agosto,Septiembre,Octubre,Novimbre,Dicimbre',
-    shortMonths: 'Ene,Feb,Mar,Abr,May,Jun,Jul,Aog,Sep,Oct,Nov,Dic',
-    days: 'Domingo,Lunes,Martes,Miercoles,Jueves,Viernes,Sabado',
-    shortDays: 'Dom,Lun,Mar,Mie,Jue,Vie,Sab'
-});
 
 $(document).ready(function() {
-    var TPaciente = $('#tabla').dataTable({
+    var TPaciente = $('#tabla_paciente').dataTable({
         "iDisplayLength": 5,
         "iDisplayStart": 0,
         "sPaginationType": "full_numbers",
@@ -49,27 +43,74 @@ $(document).ready(function() {
     var $btn_codcel       = $frmpaciente.find('button:button#btn_codcel');
     var $cod_celular      = $frmpaciente.find('input:text#cod_celular');
     var $btnaccion        = $frmpaciente.find('input:button#btnaccion');
-
+    var $btnlimpiar       = $frmpaciente.find('input:button#btnlimpiar');
 
     $municipio.select2();
     $sector.select2();
 
-    $fecha_nacimiento.dateinput({
-        lang: 'es',
-        format: 'dd-mm-yyyy', // the format displayed for the user
-        selectors: true, // whether month/year dropdowns are shown
-        offset: [10, 20], // tweak the position of the calendar
-        speed: 'fast', // calendar reveal speed
-        firstDay: 0,
-        yearRange: [-60, -9]
+    $fecha_nacimiento.datepicker({
+        language: "es",
+        format: 'dd-mm-yyyy',
+        startDate: "-60y",
+        endDate: "-9y",
+        autoclose: true
+    }).on('changeDate', function(ev){
+        $div_fecha.removeClass('has-error');
     });
 
-    $('#imcedula').tooltip({
+    $('#imgcedula').tooltip({
         html: true,
         placement: 'right',
-        title: '<span class="requerido">Requerido</span><br/>La C&eacute;dula no puede estar en <span class="alerta">blanco</span>,<br/> ni comenzar con 0, debe seleccionar la nacionalidad en<span class="alerta">(N)</span>'
+        title: '<span class="requerido">Requerido</span><br/>La C&eacute;dula no puede estar en <span class="alerta">blanco</span>,<br/> no debe tener menos de <span class="alerta">7 digitos</span>, ni comenzar con 0,<br/> debe seleccionar la nacionalidad en<span class="alerta"> (N)</span>'
+    });
+    
+    $('#imgnombre').tooltip({
+        html: true,
+        placement: 'left',
+        title: '<span class="requerido">Requerido</span><br/>El Nombre no debe estar en <span class="alerta">blanco</span>,<br/> solo acepta<span class="alerta"> letras</span>'
     });
 
+    $('#imgapellido').tooltip({
+        html: true,
+        placement: 'right',
+        title: '<span class="requerido">Requerido</span><br/>El Apellido no debe estar en <span class="alerta">blanco</span>,<br/> solo acepta<span class="alerta"> letras</span>'
+    });
+
+    $('#imgtelefono').tooltip({
+        html: true,
+        placement: 'left',
+        title: '<span class="requerido">Requerido</span><br/>El Tel&eacute;fono no puede estar en <span class="alerta">blanco</span>,<br/>no debe tener menos de <span class="alerta">7 digitos</span> ,<br/>debe seleccionar el C&oacute;digo <span class="alerta">(Cod)</span>'
+    });
+    
+    $('#imgfechanaci').tooltip({
+        html: true,
+        placement: 'left',
+        title: '<span class="requerido">Requerido</span><br/>Este campo es requerido '
+    });
+    $('#imgcelular').tooltip({
+        html: true,
+        placement: 'left',
+        title: '<span class="requerido">Requerido</span><br/>El Celular no puede estar en <span class="alerta">blanco</span>,<br/>no debe tener menos de <span class="alerta">7 digitos</span> ,<br/>debe seleccionar el C&oacute;digo <span class="alerta">(Cod)</span>'
+    });
+    
+    $('#imgdireccion').tooltip({
+        html: true,
+        placement: 'left',
+        title: '<span class="requerido">Requerido</span><br/>La Direcci&oacute;n no debe estar en <span class="alerta">blanco</span><br/> caracteres permitidos<span class="alerta"> #/º-</span><br/>no debe tener menos de <span class="alerta">10 caracteres</span> '
+    });
+    
+    $('#imgmunicipio').tooltip({
+        html: true,
+        placement: 'right',
+        title: '<span class="requerido">Requerido</span><br/>Este campo es requerido '
+    });
+    
+    $('#imgsector').tooltip({
+        html: true,
+        placement: 'left',
+        title: '<span class="requerido">Requerido</span><br/>Este campo es requerido '
+    });
+    
     // caracteres permitidos para la caja de texto sector cuando escriba
     var val_cedula    = '1234567890';
     var val_letra     = ' abcdefghijklmnopqrstuvwxyzáéíóúñ';
@@ -80,86 +121,98 @@ $(document).ready(function() {
     $nombre.validar(val_letra);
     $apellido.validar(val_letra);
     $telefono.validar(val_cedula);
+    $celular.validar(val_cedula);
     $direccion.validar(val_direccion);
 
     $("ul#nacionalidad > li > span").click(function() {
 
         var nac = $(this).attr('id');
         if (nac != 'N') {
+            $btn_nac.removeClass('btn-danger');
+            if (nac == 'V') {
+                var tamano = 10;
+            } else {
+                tamano = 11;
+            }
             $hnac.val(nac);
-            $text_nac.val(nac + '-');
-            $cedula_p.focus();
+            $cedula_p.attr('maxlength', tamano).val(nac + '-').focus();
         } else {
             $hnac.val('');
-            $text_nac.val('');
             $cedula_p.val('');
         }
     });
-
+    
+    $cedula_p.keypress(function(e) {
+        var carac = $(this).val().length;
+        if (e.which == 8 && carac < 3) {
+            e.preventDefault();
+        } 
+    });
+    
     $("ul#cod_local > li > span").click(function() {
-
-        var cod_local = $(this).text();
+        
+        $hcod_telefono.val('');
+        $telefono.val('');
         var id = $(this).attr('id');
-        if (cod_local != 'Cod') {
+        var cod_local = $(this).text();
+
+        if (id != 0) {
+            $btn_codlocal.removeClass('btn-danger');
             $hcod_telefono.val(id);
-            $cod_telefono.val(cod_local);
-            $telefono.focus();
-        } else {
-            $hcod_telefono.val('');
-            $cod_telefono.val('');
-            $telefono.val('');
+            $telefono.attr('maxlength', '12').val(cod_local+'-').focus();
         }
     });
-
+    
+    $telefono.keypress(function(e) {
+        var carac = $(this).val().length;
+        if (e.which == 8 && carac < 6) {
+            e.preventDefault();
+        } 
+    });
+    
     $("ul#cod_cel > li > span").click(function() {
-
+        
+        $hcod_celular.val('');
+        $celular.val('');
         var cod_celular = $(this).text();
         var id = $(this).attr('id');
-        if (cod_celular != 'Cod') {
+        if (id != 0) {
+            $btn_codcel.removeClass('btn-danger');
             $hcod_celular.val(id);
-            $cod_celular.val(cod_celular);
-            $celular.focus();
-        } else {
-            $hcod_celular.val('');
-            $cod_celular.val('');
-            $celular.val('');
+            $celular.attr('maxlength', '12').val(cod_celular+'-').focus();
         }
     });
-
+    
+    $celular.keypress(function(e) {
+        var carac = $(this).val().length;
+        if (e.which == 8 && carac < 6) {
+            e.preventDefault();
+        } 
+    });
+    
+    var url = '../../controlador/paciente/paciente.php';
+    
     $municipio.on('change', function() {
         var codigo_municipio = $(this).val();
+        $sector.select2('val',0);
+        $sector.find('option:gt(0)').remove().end();
         if (codigo_municipio > 0) {
-            $sector.find('option:gt(0)').remove().end();
-            $.post('../../controlador/paciente.php', {codigo_municipio: codigo_municipio, accion: 'Sector'}, function(data) {
+            $.post(url, {codigo_municipio: codigo_municipio, accion: 'Sector'}, function(data) {
                 var option = "";
                 $.each(data, function(i) {
                     option += "<option value=" + data[i].cod_sector + ">" + data[i].sector + "</option>";
                 });
                 $sector.append(option);
             }, 'json');
-        } else {
-            $sector.find('option:gt(0)').remove().end();
         }
     });
-
-    $sector.on('change', function() {
-        var codigo_municipio = $(this).val();
-        if (codigo_municipio > 0) {
-
-        }
-    });
-
-    var url = '../../controlador/paciente.php';
-
+ 
     $btnaccion.on('click', function() {
-
-        if ($text_nac.val() == '') {
+        
+        if ($hnac.val() == '') {
             $btn_nac.addClass('btn-danger');
             $btn_nac.focus();
-        } else if ($cedula_p.val() === null || $cedula_p.val().length === 0 || /^\s+$/.test($cedula_p.val())) {
-            $div_cedula.addClass('has-error');
-            $cedula_p.focus();
-        } else if ($cedula_p.val() === null || $cedula_p.val().length === 0 || /^\s+$/.test($cedula_p.val())) {
+        } else if ($cedula_p.val().length === 2) {
             $div_cedula.addClass('has-error');
             $cedula_p.focus();
         } else if ($nombre.val() === null || $nombre.val().length === 0 || /^\s+$/.test($nombre.val())) {
@@ -168,156 +221,139 @@ $(document).ready(function() {
         } else if ($apellido.val() === null || $apellido.val().length === 0 || /^\s+$/.test($apellido.val())) {
             $div_apellido.addClass('has-error');
             $apellido.focus();
-        } else if ($cod_telefono.val() == '') {
+        } else if ($hcod_telefono.val() == '') {
             $btn_codlocal.addClass('btn-danger');
-        } else if ($telefono.val() === null || $telefono.val().length === 0 || /^\s+$/.test($telefono.val())) {
-            $div_telefono.addClass('has-error');
-            $telefono.focus();
-        } else if ($telefono.val() === null || $telefono.val().length === 0 || /^\s+$/.test($telefono.val())) {
-            $div_telefono.addClass('has-error');
-            $telefono.focus();
-        } else if ($telefono.val() === null || $telefono.val().length === 0 || /^\s+$/.test($telefono.val())) {
+        } else if ( $telefono.val().length === 5) {
             $div_telefono.addClass('has-error');
             $telefono.focus();
         } else if ($fecha_nacimiento.val() === null || $fecha_nacimiento.val().length === 0 || /^\s+$/.test($fecha_nacimiento.val())) {
             $div_fecha.addClass('has-error');
             $fecha_nacimiento.focus();
-        } else if ($cod_celular.val() == '') {
+        } else if ($hcod_telefono.val() == '') {
             $btn_codcel.addClass('btn-danger');
         } else if ($celular.val() === null || $celular.val().length === 0 || /^\s+$/.test($celular.val())) {
             $div_celular.addClass('has-error');
             $celular.focus();
         } else if ($municipio.val() == 0) {
-            $municipio.select2("container").addClass("error_select");
-            $('#s2id_municipio a.select2-choice').addClass('error_select');
+            $municipio.addClass("has-error");
         } else if ($sector.val() == 0) {
-            $sector.select2("container").addClass("error_select");
-            $('#s2id_sector a.select2-choice').addClass('error_select');
-       } else if ($direccion.val() === null || $direccion.val().length === 0 || /^\s+$/.test($direccion.val())) {
+            $sector.addClass("has-error");
+        } else if ($direccion.val() === null || $direccion.val().length === 0 || /^\s+$/.test($direccion.val())) {
             $div_direccion.addClass('has-error');
             $direccion.focus();
         } else {
 
             $('#accion').remove();
             var accion = $(this).val();
-            var $accion = ' <input type="hidden" id="accion" name="accion" value="'+accion+'" />';
+            var $accion = ' <input type="hidden" id="accion" name="accion" value="' + accion + '" />';
             $($accion).prependTo($(this));
-            if(accion == 'Agregar'){
+            if (accion == 'Agregar') {
                 $.post(url, $frmpaciente.serialize(), function(data) {
 
                     var cod_msg = parseInt(data.error_codmensaje);
                     var mensaje = data.error_mensaje;
-                    var tipo = data.tipo_error;
                     window.parent.apprise(mensaje, {'textOk': 'Aceptar'});
-                    if(cod_msg == 21){
+                    if (cod_msg == 21) {
                         var modificar = '<img class="modificar" title="Modificar"         style="cursor: pointer" src="../../imagenes/datatable/modificar.png" width="18" height="18" alt="Modificar"/>';
-                        TPaciente.fnAddData(
-                                                [
-                                                    $text_nac.val()+''+$cedula_p.val(),
-                                                    $nombre.val() + ' ' + $apellido.val(),
-                                                    $fecha_nacimiento.val(),
-                                                    $cod_telefono.val()+''+$telefono.val(),
-                                                    modificar
-                                                ]
-                                            );
-                                    limpiar();
+                        TPaciente.fnAddData([$cedula_p.val(),$nombre.val() + ' ' + $apellido.val(),$fecha_nacimiento.val(), $telefono.val(),modificar]);
+                        limpiar();
                     }
-                },'json');
+                }, 'json');
+            } else {
+                window.parent.apprise('&iquest;Desea Modificar los datos del registro?', {'verify': true, 'textYes': 'Aceptar', 'textNo': 'Cancelar'}, function(r) {
+                    if (r) {
+                        $cedula_p.prop('disabled',false);
+                        $.post(url, $frmpaciente.serialize(), function(data) {
+                            $cedula_p.prop('disabled',true);
+                            var cod_msg = parseInt(data.error_codmensaje);
+                            var mensaje = data.error_mensaje;
+                            window.parent.apprise(mensaje, {'textOk': 'Aceptar'});
+
+                            var fila = $('#fila').val();
+                            if (cod_msg == 22) {
+
+                                $("#tabla_paciente tbody tr:eq(" + fila + ")").find("td:eq(2)").text($fecha_nacimiento.val());
+                                $("#tabla_paciente tbody tr:eq(" + fila + ")").find("td:eq(3)").text($telefono.val());
+                                limpiar();
+                            }
+                        }, 'json');
+                    }
+                });
+            }
         }
-        }
 
-        /*
-         var cod_msg = parseInt(data.error_codmensaje);
-         var mensaje = data.error_mensaje;
-         var tipo = data.tipo_error;
-
-         jAlert(tipo, mensaje, 'VENTANA DE MENSAJE');
-
-         TPaciente.fnAddData([$('#cedula_p').val(), $('#nombre').val() + ' ' + $('#apellido').val(), $('#fecha_nacimiento').val(), $('#telefono').val(), modificar]);
-
-         $('#cedula_p').val('');
-         $('#nombre').val('');
-         $('#apellido').val('');
-         $('#telefono').val('');
-         $('#fecha_nacimiento').val('');
-         $('#celular').val('');
-         $('#municipio').val(0);
-         $("select#sector").find('option:gt(0)').remove().end();
-         $('#direccion').val('');
-         $('#accion').remove();
-
-         }, 'json');
-
-         $('#accion').val('Modificar');
-         $.post(url, $('#frmpaciente').serialize(), function(data) {
-
-         var cod_msg = parseInt(data.error_codmensaje);
-         var mensaje = data.error_mensaje;
-         var tipo = data.tipo_error;
-
-         var fila = $('#fila').val();
-
-         jAlert(tipo, mensaje, 'VENTANA DE MENSAJE');
-
-         TPaciente.fnUpdate($('#nombre').val() + ' ' + $('#apellido').val(), parseInt(fila), 1);
-         TPaciente.fnUpdate($('#fecha_nacimiento').val(), parseInt(fila), 2);
-         TPaciente.fnUpdate($('#telefono').val(), parseInt(fila), 3);
-
-         limpiar();
-         $('#fila').remove();
-         $('#accion').remove();
-         $('#btnaccion').val('Agregar');
-
-         }, 'json');*/
     });
 
 
-    $('table#tabla').on('click', 'img.modificar', function() {
+    $('table#tabla_paciente').on('click', 'img.modificar', function() {
+        
+        limpiar();
+        var padre             = $(this).closest('tr');
+        var fila              = padre.index();
+        var cedula_completa   = padre.children('td:eq(0)').text().trim();
+        var fecha_nacimiento  = padre.children('td:eq(2)').text().trim();
+        var telefono_completo = padre.children('td:eq(3)').text().trim();
+        
+        var datos = cedula_completa.split('-');
+        
+        var nacionalidad = datos[0];
 
+        var cedula_p = datos[1];
+        
+        $btn_nac.prop('disabled', true);
+        $text_nac.prop('disabled', true);
+        $text_nac.val(nacionalidad + '-');
 
-        var fila = $(this).parent("td").parent().parent().children().index($(this).parent("td").parent());
-        var cedula_p = $(this).parents('tr').children('td:eq(0)').text();
-        var fecha_naci = $(this).parents('tr').children('td:eq(2)').text();
-        //var telefono   = $(this).parents('tr').children('td:eq(3)').text();
+        $hnac.val(nacionalidad);
+
+        $cedula_p.prop('disabled', true);
+        $cedula_p.val(cedula_completa);
+
+        var datos_tele = telefono_completo.split('-');
+       
+        var vali_cod  = datos_tele[0].substring(1,2);
+        if(vali_cod== 2){
+            $cod_telefono.val(datos_tele[0]+'-');
+            $telefono.val(datos_tele[1]);
+        }else{
+            $cod_celular.val(datos_tele[0]+'-');
+            $celular.val(datos_tele[1]);
+        }
+        $fecha_nacimiento.val(fecha_nacimiento);
+        $('#fila').remove();
 
         var $fila = '<input type="hidden" id="fila"  value="' + fila + '" name="fila">';
         $($fila).appendTo('#btnaccion');
 
         $('#accion').remove();
-
-        $.post(url, {cedula_p: cedula_p, accion: 'BuscarDatos'}, function(data) {
-
-            $('#cedula_p').val(cedula_p);
-            $('#nombre').val(data.nombre);
-            $('#apellido').val(data.apellido);
-            $('#fecha_nacimiento').val(fecha_naci);
-            $('#apellido').val(data.apellido);
-            $('#fecha_nacimiento').val(fecha_naci);
-            $('#telefono').val(data.telefono);
-            $('#celular').val(data.celular);
-            $('#direccion').val(data.direccion);
-            $('#btnaccion').val('Modificar');
-
+        $.post(url, {cedula_p: cedula_completa, accion: 'BuscarDatos'}, function(data) {
+    
             var codigo_municipio = parseInt(data.cod_municipio);
-            var codigo_sector = parseInt(data.cod_sector);
+            var codigo_sector    = parseInt(data.cod_sector);
 
-            $('select#municipio').find('option[value=' + codigo_municipio + ']').attr("selected", "selected");
-
-            $("select#sector").find('option:gt(0)').remove().end();
+            $nombre.val(data.nombre).prop('disabled',true);
+            $apellido.val(data.apellido).prop('disabled',true);
+            $hcod_telefono.val(data.cod_telefono);
+            $telefono.val(data.telefono);
+            $hcod_celular.val(data.cod_celular);
+            $celular.val(data.celular);
+            $municipio.select2('val',codigo_municipio);
+            $direccion.val(data.direccion);
+            $sector.find('option:gt(0)').remove().end();
             $.post(url, {codigo_municipio: codigo_municipio, accion: 'Sector'}, function(data) {
                 var option = "";
                 $.each(data, function(i) {
                     option += "<option value=" + data[i].cod_sector + ">" + data[i].sector + "</option>";
                 });
-                $("select#sector").append(option);
-                $('select#sector').find('option[value=' + codigo_sector + ']').attr("selected", "selected");
+                $sector.append(option);
+                $sector.select2('val',codigo_sector);
             }, 'json');
-
+            
         }, 'json');
-
+        $btnaccion.val('Modificar');
     });
 
-    $('#btnlimpiar').on('click', function() {
+    $btnlimpiar.on('click', function() {
         limpiar();
     });
 
@@ -325,9 +361,15 @@ $(document).ready(function() {
 
 function limpiar() 
 {
+    $('#btn_nac,#btn_codlocal,#btn_codcel').removeClass('btn-danger');
+    $('#btn_nac,#text_nac,#cedula_p').prop('disabled', false);
+    $('#hcedula_p').val('');
     $("form#frmpaciente")[0].reset();
     $('#accion').remove();
     $('#fila').remove();
+    $('input:text').prop('disabled',false);
+    $('div').removeClass('has-error');
     $('form#frmpaciente select').select2('val', 0);
     $('form#frmpaciente select#sector').find('option:gt(0)').remove().end();    
+    $('#btnaccion').val('Agregar');
 }

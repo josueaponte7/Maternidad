@@ -28,7 +28,7 @@ $(document).ready(function() {
 
 
     var val_sectores = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ0-9\s]{5,50}$/;
-    var url = '../../controlador/sector.php';
+    var url = '../../controlador/mantenimiento/sector.php';
 
     $('#btnaccion').on('click', function() {
 
@@ -41,15 +41,17 @@ $(document).ready(function() {
 
         var accion = $(this).val();
 
-
+//        var TotalRow = TSector.fnGetData().length;
+//        var lastRow = TSector.fnGetData(TotalRow - 1);
+//        alert(lastRow);
+//        return false;
+//        //var codigo = parseInt(lastRow[0]) + 1;
+           
         if (accion === 'Agregar') {
 
             if ($municipio.val() == 0) {
                 $municipio.addClass('has-error');
             } else if ($sector.val() === null || $sector.val().length === 0 || /^\s+$/.test($sector.val())) {
-                $div_sector.addClass('has-error');
-                $sector.focus();
-            } else if (!val_sectores.test($sector.val())) {
                 $div_sector.addClass('has-error');
                 $sector.focus();
             } else {
@@ -59,12 +61,9 @@ $(document).ready(function() {
                 $.post(url, $('#frmsector').serialize(), function(data) {
                     var cod_msg = parseInt(data.error_codmensaje);
                     var mensaje = data.error_mensaje;
-                    var tipo = data.tipo_error;
-
-                    window.parent.apprise(mensaje, {'textOk': 'Aceptar'});
-
-                    if (cod_msg === 21) {
-                        var municipio = $municipio.find('option').filter(":selected").html();
+                    window.parent.apprise(mensaje, {'textOk': 'Aceptar'},function(){
+                       if (cod_msg === 21) {
+                        var municipio     = $municipio.find('option').filter(":selected").html();
                         var cod_municipio = $municipio.find('option').filter(":selected").val();
                         var codigo_sector = TSector.fnGetData().length;
 
@@ -74,22 +73,19 @@ $(document).ready(function() {
 
                         TSector.fnAddData([municipio, $sector.val(), modificar,eliminar]);
                         limpiar();
-                    }
+                    } 
+                    });
+
+                    
                 }, 'json');
             }
         } else {
             if ($municipio.val() == 0) {
-                $municipio.select2("container").addClass("error");
-                $('#s2id_municipio a.select2-choice').addClass('error');
+                $municipio.addClass('has-error');
             } else if ($sector.val() === null || $sector.val().length === 0 || /^\s+$/.test($sector.val())) {
-                $municipio.select2("container").removeClass("error");
-                $('#s2id_municipio a.select2-choice').removeClass('error');
                 $div_sector.addClass('has-error');
                 $sector.focus();
-            } else if (!val_sectores.test($sector.val())) {
-                $div_sector.addClass('has-error');
-                $sector.focus();
-            } else {
+            }else {
                 window.parent.apprise('&iquest;Desea Modificar los datos del Registro?', {'verify': true, 'textYes': 'Aceptar', 'textNo': 'Cancelar'}, function(r) {
                     if (r) {
 

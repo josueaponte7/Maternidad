@@ -111,7 +111,8 @@ class Autenticar  extends Conexion
         $this->_password = $this->hashClave($clave);
 
         // consulta a la base de datos
-        $data = array("tabla" => "usuario", "condicion" => "BINARY usuario = '" . $usuario . "' AND clave = '" . $this->_password . "' AND salt_usuario = '" . $this->_salt . "'");
+
+        $data = array("tabla" => "usuario","campos"=>"id_usuario,activo,codigo_perfil", "condicion" => "BINARY usuario = '" . $usuario . "' AND clave = '" . $this->_password . "' AND salt_usuario = '" . $this->_salt . "'");
         $result = $this->row($data);
         // si el usuario existe en la base de datos
         if ($result !== FALSE) {
@@ -297,9 +298,8 @@ class Autenticar  extends Conexion
                 $this->_cod_msg   = 15;
                 $this->_mensaje = 'Ya existe un Usuario con ese nombre';
             } else {
-                $this->_ultimoid = $this->last('usuario', 'id_usuario');
-                $this->_ultimoid = (int) $this->_ultimoid + 1;
-
+                $this->_ultimoid = $this->autoIncremet('usuario', 'id_usuario');
+               
                 $this->_password = $this->hashClave($clave);
                 $this->_usuario  = $usuario;
                 $this->_estatus  = (boolean) $estatus;
@@ -336,8 +336,8 @@ class Autenticar  extends Conexion
         $data = array(
             'tabla'     => 'perfil p,perfil_priv_sub pps,sub_modulo sb ,modulo m,usuario u',
             'campos'    => 'm.cod_modulo,m.modulo',
-            'condicion' => "p.codigo_perfil=pps.codigo_perfil AND pps.cod_submodulo=sb.cod_submodulo AND sb.cod_modulo=m.cod_modulo AND p.codigo_perfil=u.codigo_perfil AND u.id_usuario=$id_usuario GROUP BY m.cod_modulo",
-            'ordenar'   => 'm.cod_modulo ASC'
+            'condicion' => "u.id_usuario=$id_usuario AND m.activo=1 AND p.codigo_perfil=pps.codigo_perfil AND pps.cod_submodulo=sb.cod_submodulo AND sb.cod_modulo=m.cod_modulo AND p.codigo_perfil=u.codigo_perfil GROUP BY m.cod_modulo",
+            'ordenar'   => 'm.posicion,m.cod_modulo ASC'
             );
         $result = $this->select($data, FALSE);
         return $result;
@@ -346,9 +346,10 @@ class Autenticar  extends Conexion
     public function getSubModulos($id_usuarios, $cod_modulo)
     {
         $data = array(
-            "tabla"     => "perfil p,perfil_priv_sub pps,sub_modulo sb ,modulo m,usuario u",
-            "campos"    => "sb.sub_modulo,sb.ruta",
-            "condicion" => "p.codigo_perfil=pps.codigo_perfil AND pps.cod_submodulo=sb.cod_submodulo AND sb.cod_modulo=m.cod_modulo AND p.codigo_perfil=u.codigo_perfil AND u.id_usuario=$id_usuarios AND sb.cod_modulo=$cod_modulo GROUP BY sb.sub_modulo,m.cod_modulo"
+            "tabla"     => "perfil p,perfil_priv_sub pps,sub_modulo sm ,modulo m,usuario u",
+            "campos"    => "sm.sub_modulo,sm.ruta",
+            "condicion" => "u.id_usuario=$id_usuarios AND sm.cod_modulo=$cod_modulo AND sm.activo=1 AND p.codigo_perfil=pps.codigo_perfil AND pps.cod_submodulo=sm.cod_submodulo AND sm.cod_modulo=m.cod_modulo AND p.codigo_perfil=u.codigo_perfil GROUP BY sm.sub_modulo,m.cod_modulo",
+            "ordenar"   => "sm.posicion,sm.cod_submodulo"
             );
         $result = $this->select($data, FALSE);
         return $result;
