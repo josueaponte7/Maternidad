@@ -34,16 +34,30 @@ $result_modulos      = $obj_submodulo->getModulo($datos);
         <link rel="stylesheet" type="text/css" href="librerias/css/maquetacion.css"  />
         <link rel="stylesheet" type="text/css" href="librerias/css/apprise.css"  />
         <link rel="stylesheet" type="text/css" href="librerias/css/basic.css"/>
+        <link rel="stylesheet" type="text/css" href="librerias/css/bootstrap.css"  />
+        <link rel="stylesheet" type="text/css" href="librerias/css/bootstrap-theme.css"  />
         <script type="text/javascript" src="librerias/js/jquery.1.10.js"></script>
         <script src="librerias/js/jquery.simplemodal.js" type="text/javascript"></script>
         <script type="text/javascript" src="librerias/js/apprise.js"></script>
         <script type="text/javascript" src="librerias/js/ddsmoothmenu.js"></script>
+        <script type="text/javascript" src="librerias/js/bootstrap.js"></script>
+        <script type="text/javascript" src="librerias/js/bootstrap-tooltip.js"></script>
         <style type="text/css">
             div#menu,div#menu > ul > li > ul > li > span{
                 font-family:Arial, Helvetica, sans-serif;
                 font-size: 11px;
+                height: 34px !important
             }
-            span#salir{
+            span#salir,span#ayuda{
+                padding:9px;
+                float: right;
+                border-left: 1px solid #778;
+                color: #FFFFFF;
+                width:53px;
+                text-align: center;
+                cursor: pointer;
+            }
+            span#ayuda{
                 padding:9px;
                 float: right;
                 border-left: 1px solid #778;
@@ -54,6 +68,9 @@ $result_modulos      = $obj_submodulo->getModulo($datos);
             }
             span#salir:hover{
                 background-color:#AA4B97;
+            }
+            span#ayuda:hover{
+                text-decoration: underline;
             }
             .usuario{
                 font-family:Arial, Helvetica, sans-serif;
@@ -87,7 +104,11 @@ $result_modulos      = $obj_submodulo->getModulo($datos);
                 contentsource: "markup" //"markup" or ["container_id", "path_to_menu_file"]
             });
             $(document).ready(function() {
-                
+                $('#ayuda').tooltip({
+                    html: true,
+                    placement: 'top',
+                    title: 'Click para ver la ayuda en linea o presione F1'
+                });
                 show();
                 var sub_modulo = '<?php echo $sub_modulo; ?>';
                 var s_modulo = '<?php echo $s_modulo; ?>';
@@ -123,6 +144,16 @@ $result_modulos      = $obj_submodulo->getModulo($datos);
                         }
                     });
                 });
+                $("#ayuda").click(function() {
+                    var url = 'manual.pdf';
+                    window.open(url);
+                });
+                
+                 $(document).on('keypress', function(e) {
+                     if(e.keyCode == 112){
+                         $( "#ayuda" ).trigger( "click" );
+                     }
+                 });
             });
             
             function autofitIframe(id){
@@ -210,6 +241,7 @@ $result_modulos      = $obj_submodulo->getModulo($datos);
                     }
                     ?>
                 </ul>
+                <span id="ayuda">Ayuda</span>
                 <span id="salir">Salir</span>
             </div>
 
